@@ -13,9 +13,12 @@ create extension if not exists pgcrypto with schema extensions;
 create schema if not exists private;   -- schéma non exposé par l'API
 
 -- ---------- Tables ----------
+-- Chaque table a la sécurité RLS activée dès sa création, sans aucune règle d'accès :
+-- personne ne peut la lire ni l'écrire depuis le site, seules les fonctions plus bas y accèdent.
 create table if not exists public.pharmacies (
   finess text primary key
 );
+alter table public.pharmacies enable row level security;
 
 -- Pilules à prix libre acceptées et formats de boîte vendus (1 = 1 mois, 3 = 3 mois).
 -- À garder identique à PILULES (remboursable:false) dans prix-pillule.html.
@@ -23,6 +26,7 @@ create table if not exists public.pills (
   id text primary key,
   formats smallint[] not null
 );
+alter table public.pills enable row level security;
 insert into public.pills (id, formats) values
   ('varnoline','{1,3}'), ('mercilon','{1,3}'), ('desobel','{3}'), ('minesse','{1,3}'), ('perleane','{1,3}'),
   ('carlin','{3}'), ('triafemi','{3}'), ('optikinzy','{3}'), ('jasmine','{3}'), ('jasminelle','{3}'),
@@ -42,10 +46,12 @@ create table if not exists public.reports (
   outdated integer not null default 0,
   last_outdated timestamptz
 );
+alter table public.reports enable row level security;
 create index if not exists reports_finess_idx on public.reports (finess);
 create index if not exists reports_pill_idx on public.reports (pilule, format);
 
 create table if not exists private.settings (k text primary key, v text not null);
+alter table private.settings enable row level security;
 insert into private.settings (k, v) values ('salt', encode(extensions.gen_random_bytes(16), 'hex'))
 on conflict (k) do nothing;
 
@@ -53,13 +59,11 @@ create table if not exists private.rate_events (
   key text not null,
   at timestamptz not null default now()
 );
+alter table private.rate_events enable row level security;
 create index if not exists rate_events_key_idx on private.rate_events (key, at);
 create index if not exists rate_events_at_idx on private.rate_events (at);
 
 -- ---------- Verrouillage : aucun accès direct aux tables ----------
-alter table public.pharmacies enable row level security;
-alter table public.pills      enable row level security;
-alter table public.reports    enable row level security;
 revoke all on public.pharmacies, public.pills, public.reports from anon, authenticated;
 revoke all on all tables in schema private from anon, authenticated;
 revoke usage on schema private from anon, authenticated;
