@@ -65,3 +65,7 @@ Puis régénérer `supabase/pharmacies.sql` et l'exécuter dans Supabase.
 
 Elle figure à trois endroits qui doivent rester identiques pour les pilules à prix libre :
 `PILULES` dans `prix-pilule.html`, `PILLS` dans `serveur/server.js`, la table `pills` dans `supabase/schema.sql`.
+
+## Licence
+
+Code sous licence MIT, voir [LICENSE](LICENSE).
