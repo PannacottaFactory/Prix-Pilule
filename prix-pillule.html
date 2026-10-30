@@ -1,0 +1,1503 @@
+<title>Prix Pillule</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Comparez les prix des pilules contraceptives non remboursées, pharmacie par pharmacie, grâce aux signalements des utilisatrices.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..600,100&family=Nunito+Sans:opsz,wght@6..12,400..750&display=swap">
+<style>
+/* Layout : carte plein écran, panneaux flottants. Mobile : barre de recherche en haut + bottom sheet.
+   Bureau (≥ 900px) : colonne flottante à gauche (recherche + panneau), carte à droite. */
+:root{
+  --bg:#FFFFFF;          /* blanc */
+  --surface:#FFFFFF;     /* cartes, panneaux */
+  --tint:#FDF0F2;        /* rose poudré très pâle (fonds doux) */
+  --tint-strong:#F8DCE2; /* rose poudré clair (pastilles, survol) */
+  --powder:#E6B4BF;      /* rose poudré (décor, bordures) */
+  --rose-soft:#FBE6EB;
+  --fg:#4D3540;          /* prune profond */
+  --muted:#7A5F69;       /* texte secondaire (≥ 4.5:1 sur blanc et sur --tint) */
+  --action:#B0546A;      /* rose soutenu pour les actions (blanc dessus ≈ 4.9:1) */
+  --action-hover:#984459;
+  --on-action:#FFFFFF;
+  --line:#F3DDE2;
+  --ok:#4F7553;
+  --warn:#8A6424;
+  --shadow:0 1px 2px rgba(154,95,102,.08),0 6px 24px rgba(154,95,102,.12);
+  --map-filter:saturate(.8) brightness(1.03);
+  --font-display:"Fraunces","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --font-body:"Nunito Sans","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+  --r-sm:10px; --r-md:16px; --r-lg:24px;
+  --footer-h:44px;
+  --gutter-l:max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r:max(16px, env(safe-area-inset-right, 0px));
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#2D2129; --surface:#3A2B35; --tint-strong:#58404F; --tint:#463440;
+    --powder:#D9A3B2; --rose-soft:#523846; --fg:#FBEFF3; --muted:#DCC0CB;
+    --action:#F4B6C6; --action-hover:#F9CAD6; --on-action:#2D2129; --line:#5C4553;
+    --ok:#A9C9A9; --warn:#E6C58C;
+    --shadow:0 1px 2px rgba(0,0,0,.2),0 8px 28px rgba(0,0,0,.28);
+    --map-filter:brightness(.72) saturate(.6) contrast(1.05);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#2D2129; --surface:#3A2B35; --tint-strong:#58404F; --tint:#463440;
+  --powder:#D9A3B2; --rose-soft:#523846; --fg:#FBEFF3; --muted:#DCC0CB;
+  --action:#F4B6C6; --action-hover:#F9CAD6; --on-action:#2D2129; --line:#5C4553;
+  --ok:#A9C9A9; --warn:#E6C58C;
+  --shadow:0 1px 2px rgba(0,0,0,.2),0 8px 28px rgba(0,0,0,.28);
+  --map-filter:brightness(.72) saturate(.6) contrast(1.05);
+  color-scheme:dark;
+}
+
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:3000;background:var(--bg)}
+h1,h2,h3{font-family:var(--font-display);font-weight:500;font-variation-settings:"SOFT" 100;text-wrap:balance;line-height:1.2;margin:0}
+a{color:var(--action)}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--powder);outline-offset:2px;border-radius:6px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.tab{font-variant-numeric:tabular-nums}
+
+/* ---------- Leaflet (CSS essentiel, inliné) ---------- */
+.leaflet-pane,.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile-container,.leaflet-pane>svg,.leaflet-pane>canvas,.leaflet-zoom-box,.leaflet-image-layer,.leaflet-layer{position:absolute;left:0;top:0}
+.leaflet-container{overflow:hidden;-webkit-tap-highlight-color:transparent;outline-offset:1px}
+.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow{-webkit-user-select:none;user-select:none;-webkit-user-drag:none}
+.leaflet-container .leaflet-tile,.leaflet-container .leaflet-marker-icon{max-width:none!important;max-height:none!important}
+.leaflet-container.leaflet-touch-zoom{touch-action:pan-x pan-y}
+.leaflet-container.leaflet-touch-drag{touch-action:none}
+.leaflet-tile{filter:inherit;visibility:hidden}
+.leaflet-tile-loaded{visibility:inherit}
+.leaflet-pane{z-index:400}.leaflet-tile-pane{z-index:200}.leaflet-overlay-pane{z-index:400}.leaflet-shadow-pane{z-index:500}.leaflet-marker-pane{z-index:600}.leaflet-tooltip-pane{z-index:650}.leaflet-popup-pane{z-index:700}
+.leaflet-map-pane svg{z-index:200}
+.leaflet-control{position:relative;z-index:800;pointer-events:auto;float:left;clear:both}
+.leaflet-top,.leaflet-bottom{position:absolute;z-index:1000;pointer-events:none}
+.leaflet-top{top:0}.leaflet-right{right:0}.leaflet-bottom{bottom:0}.leaflet-left{left:0}
+.leaflet-right .leaflet-control{float:right}
+.leaflet-zoom-animated{transform-origin:0 0}
+.leaflet-zoom-anim .leaflet-zoom-animated{transition:transform .25s cubic-bezier(0,0,.25,1)}
+.leaflet-zoom-anim .leaflet-tile,.leaflet-pan-anim .leaflet-tile{transition:none}
+.leaflet-zoom-anim .leaflet-zoom-hide{visibility:hidden}
+.leaflet-interactive{cursor:pointer}
+.leaflet-grab{cursor:grab}.leaflet-dragging .leaflet-grab{cursor:move}
+.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-image-layer,.leaflet-pane>svg path,.leaflet-tile-container{pointer-events:none}
+.leaflet-marker-icon.leaflet-interactive,.leaflet-pane>svg path.leaflet-interactive{pointer-events:auto}
+.leaflet-tile-pane{filter:var(--map-filter)}
+.leaflet-control-attribution{background:color-mix(in srgb,var(--surface) 85%,transparent);color:var(--muted);font-size:11px;padding:2px 8px;border-radius:8px 0 0 0;margin:0!important}
+.leaflet-control-attribution a{color:var(--muted)}
+.leaflet-control-zoom{margin:0 calc(var(--gutter-r)) 12px 0!important;display:flex;flex-direction:column;border-radius:var(--r-sm);overflow:hidden;box-shadow:var(--shadow)}
+.leaflet-control-zoom a{display:grid;place-items:center;width:44px;height:44px;background:var(--surface);color:var(--fg);text-decoration:none;font-size:22px;line-height:1}
+.leaflet-control-zoom a+a{border-top:1px solid var(--line)}
+.leaflet-control-zoom a:hover{background:var(--tint)}
+
+/* ---------- Structure ---------- */
+#app{position:relative;height:100%;overflow:hidden}
+#map{position:absolute;inset:0;background:var(--tint);z-index:0}
+#map.no-tiles{background-color:var(--tint);background-image:
+  radial-gradient(circle at 20% 30%,color-mix(in srgb,var(--powder) 22%,transparent) 0 120px,transparent 121px),
+  radial-gradient(circle at 75% 70%,color-mix(in srgb,var(--tint-strong) 70%,transparent) 0 180px,transparent 181px),
+  linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:auto,auto,48px 48px,48px 48px}
+
+.topbar{position:absolute;z-index:1100;top:calc(env(safe-area-inset-top,0px) + 10px);left:var(--gutter-l);right:var(--gutter-r);display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.topbar>*{pointer-events:auto}
+.brandrow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:8px;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(8px);padding:6px 14px 6px 10px;border-radius:999px;box-shadow:var(--shadow);text-decoration:none;color:var(--fg)}
+.brand svg{flex:none}
+.brand b{font-family:var(--font-display);font-weight:500;font-size:19px;letter-spacing:.005em;font-variation-settings:"SOFT" 100}
+.iconbtn{display:inline-grid;place-items:center;min-width:44px;height:44px;border-radius:999px;border:0;background:var(--surface);color:var(--fg);box-shadow:var(--shadow);cursor:pointer;padding:0 12px;gap:6px}
+.iconbtn:hover{background:var(--tint)}
+.iconbtn svg{width:20px;height:20px}
+
+.field{position:relative;background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow);display:flex;align-items:center;gap:8px;padding:0 6px 0 14px;min-height:52px;border:1px solid transparent}
+.field:focus-within{border-color:var(--powder)}
+.field>svg{flex:none;width:20px;height:20px;color:var(--muted)}
+.field input{flex:1;min-width:0;border:0;background:transparent;padding:14px 0;font-size:16px;outline:none}
+.field input::placeholder{color:var(--muted);opacity:1}
+.field .clear{border:0;background:transparent;width:40px;height:40px;border-radius:999px;cursor:pointer;color:var(--muted);display:grid;place-items:center}
+.field .clear:hover{background:var(--tint)}
+.listbox{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow);margin:0;padding:6px;list-style:none;max-height:min(50vh,340px);overflow:auto;z-index:20;border:1px solid var(--line)}
+.listbox li{padding:10px 12px;border-radius:var(--r-sm);cursor:pointer;display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.listbox li[aria-selected="true"],.listbox li:hover{background:var(--tint)}
+.listbox .opt-main{font-weight:650}
+.listbox .opt-sub{font-size:13px;color:var(--muted);text-align:right}
+.listbox .empty{color:var(--muted);cursor:default}
+.listbox .empty:hover{background:none}
+
+.locbar{display:flex;flex-direction:column;gap:6px}
+.locnote{font-size:13px;color:var(--fg);background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(6px);padding:6px 12px;border-radius:var(--r-sm);box-shadow:var(--shadow);align-self:flex-start}
+
+.mapnotice{position:absolute;z-index:900;left:50%;transform:translateX(-50%);bottom:calc(var(--footer-h) + 132px);background:var(--surface);color:var(--fg);font-size:13px;padding:8px 14px;border-radius:999px;box-shadow:var(--shadow);max-width:calc(100% - 32px);text-align:center}
+
+.fab{position:absolute;z-index:1000;right:var(--gutter-r);bottom:calc(var(--footer-h) + 132px)}
+
+/* ---------- Bottom sheet / panneau ---------- */
+.sheet{position:absolute;z-index:1050;left:0;right:0;bottom:var(--footer-h);background:var(--surface);border-radius:var(--r-lg) var(--r-lg) 0 0;box-shadow:0 -4px 30px rgba(74,63,58,.12);display:flex;flex-direction:column;max-height:calc(100% - var(--footer-h) - 140px - env(safe-area-inset-top,0px));transition:max-height .28s ease}
+.sheet[data-state="peek"]{max-height:118px}
+.sheet-handle{border:0;background:transparent;width:100%;padding:10px 0 4px;cursor:pointer;display:grid;place-items:center;flex:none}
+.sheet-handle span{display:block;width:44px;height:5px;border-radius:99px;background:var(--line)}
+.sheet-body{overflow:auto;padding:4px var(--gutter-r) 20px var(--gutter-l);overscroll-behavior:contain;display:flex;flex-direction:column;gap:16px}
+.sheet[data-state="peek"] .sheet-body{overflow:hidden}
+
+.footer{position:absolute;z-index:1060;left:0;right:0;bottom:0;background:var(--tint);border-top:1px solid var(--line);font-size:12.5px;color:var(--fg);padding:8px var(--gutter-r) calc(8px + env(safe-area-inset-bottom,0px)) var(--gutter-l);display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center;justify-content:center;text-align:center}
+.footer a{color:var(--fg);text-underline-offset:2px}
+.footer .sep{color:var(--muted)}
+
+@media (min-width:900px){
+  .topbar{right:auto;width:400px;left:max(20px,env(safe-area-inset-left,0px))}
+  .sheet{left:max(20px,env(safe-area-inset-left,0px));right:auto;width:400px;top:var(--sheet-top,190px);bottom:calc(var(--footer-h) + 16px);border-radius:var(--r-lg);max-height:none;box-shadow:var(--shadow)}
+  .sheet[data-state="peek"]{max-height:none}
+  .sheet[data-state="peek"] .sheet-body{overflow:auto}
+  .sheet-handle{display:none}
+  .sheet-body{padding:20px 22px 22px}
+  .mapnotice{left:calc(50% + 210px);bottom:calc(var(--footer-h) + 16px)}
+  .fab{bottom:calc(var(--footer-h) + 120px)}
+}
+@media (max-width:899px){ .leaflet-control-zoom{display:none!important} }
+
+/* ---------- Contenu du panneau ---------- */
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.sheet h2{font-size:24px}
+.sheet h3{font-size:18px}
+.hint{display:flex;gap:12px;align-items:center}
+.hint p{margin:0}
+.hint .leaf{flex:none;width:40px;height:40px;border-radius:50%;background:var(--rose-soft);display:grid;place-items:center;color:var(--action)}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.steps li{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start}
+.steps .n{width:28px;height:28px;border-radius:50%;background:var(--tint-strong);display:grid;place-items:center;font-weight:700;font-size:14px}
+.demo-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:var(--tint-strong);color:var(--fg);padding:3px 10px;border-radius:999px}
+.note{background:var(--tint);border-radius:var(--r-md);padding:14px 16px;font-size:14.5px}
+.note p{margin:0}.note p+p{margin-top:8px}
+.note.rose{background:var(--rose-soft)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:999px;border:0;background:var(--action);color:var(--on-action);font-weight:700;cursor:pointer;text-decoration:none;font-size:16px}
+.btn:hover{background:var(--action-hover)}
+.btn.ghost{background:transparent;color:var(--action);box-shadow:inset 0 0 0 1.5px var(--action)}
+.btn.ghost:hover{background:var(--rose-soft)}
+.btn.small{min-height:40px;padding:0 14px;font-size:14px}
+.btn.block{width:100%}
+.btn[disabled]{opacity:.55;cursor:default}
+.linkbtn{border:0;background:none;color:var(--action);text-decoration:underline;text-underline-offset:2px;cursor:pointer;padding:6px 0;font-weight:650}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.spread{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.backbtn{border:0;background:var(--tint);border-radius:999px;height:40px;padding:0 14px 0 10px;display:inline-flex;align-items:center;gap:4px;cursor:pointer;font-weight:650;align-self:flex-start}
+.backbtn:hover{background:var(--tint-strong)}
+.addr{color:var(--muted);margin:4px 0 0;font-size:15px}
+
+.offers{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.offer{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:14px 0;border-top:1px solid var(--line)}
+.offer:first-child{border-top:0}
+.offer .name{font-weight:700;min-width:0}
+.offer .gen{font-size:13px;color:var(--muted);font-weight:400}
+.offer .price{font-family:var(--font-display);font-size:22px;font-weight:500;text-align:right;white-space:nowrap}
+.offer .meta{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13.5px;color:var(--muted);align-items:center}
+.offer .actions{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px}
+.offer .actions .confirm{margin-top:4px}
+.confirm.addmini{background:var(--action)!important;color:var(--on-action)}
+.confirm.addmini:hover{background:var(--action-hover)!important}
+.offer.stale .price,.offer.stale .name{color:var(--muted)}
+.offer.old{opacity:1}
+.offer.old .price{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--tint);color:var(--fg)}
+.chip.warn{background:color-mix(in srgb,var(--warn) 16%,var(--surface));color:var(--fg)}
+.chip.ok{background:color-mix(in srgb,var(--ok) 16%,var(--surface));color:var(--fg)}
+.confirm{border:0;background:var(--tint);color:var(--fg);border-radius:999px;min-height:36px;padding:0 12px;font-size:13.5px;font-weight:650;cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin-top:6px}
+.confirm:hover{background:var(--tint-strong)}
+.confirm[disabled]{cursor:default;background:transparent;color:var(--ok);padding-left:0}
+
+.phead{background:linear-gradient(135deg,var(--rose-soft),var(--tint));border-radius:var(--r-md);padding:16px 18px;border:1px solid var(--line)}
+.phead .addr{color:var(--fg)}
+.phead .chip{background:var(--surface)}
+.offer .price{color:var(--action)}
+.offer.stale .price{color:var(--muted)}
+.confirm{background:var(--rose-soft)!important;color:var(--fg)}
+.confirm:hover{background:var(--tint-strong)!important}
+.confirm[disabled]{background:transparent!important}
+.empty-note{margin:0;background:var(--tint);border:1.5px dashed var(--powder);border-radius:var(--r-md);padding:14px 16px;font-size:14.5px}
+.result .price{color:var(--action)}
+.result.stale .price{color:var(--muted)}
+.steps .n{background:var(--rose-soft)!important;color:var(--action)}
+.pin{width:22px;height:22px}
+.pin::after{width:8px;height:8px}
+.pin.small{width:16px;height:16px;border-width:1.5px;opacity:.85}
+.pin.small::after{width:6px;height:6px;background:var(--powder)}
+.prefs{display:flex;flex-direction:column;gap:16px;padding:16px;background:var(--tint);border-radius:var(--r-md)}
+.prefs .eyebrow{margin:0 0 6px}
+.drawer .seg{background:var(--surface)}
+.drawer .seg button[aria-pressed="true"]{background:var(--action);color:var(--on-action)}
+.contact{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;background:var(--tint);border-radius:var(--r-md);padding:16px 18px;margin-top:8px}
+.contact .eyebrow{flex-basis:100%}
+.contact .mail{font-family:var(--font-display);font-size:clamp(18px,4.6vw,22px);color:var(--action);word-break:break-all;user-select:all}
+.fixedrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.fixed{display:flex;flex-direction:column;background:var(--surface);border-radius:var(--r-sm);padding:8px 14px;min-width:120px}
+.fixed span{font-size:13px;color:var(--muted)}
+.fixed strong{font-family:var(--font-display);font-weight:500;font-size:24px}
+.toggle{display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-size:14.5px;user-select:none}
+.toggle input{appearance:none;width:42px;height:26px;border-radius:99px;background:var(--line);position:relative;cursor:pointer;flex:none;transition:background .2s}
+.toggle input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform .2s}
+.toggle input:checked{background:var(--action)}
+.toggle input:checked::after{transform:translateX(16px)}
+
+.seg{display:inline-flex;background:var(--tint);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;border-radius:999px;min-height:38px;padding:0 14px;font-weight:650;cursor:pointer;font-size:14px}
+.seg button[aria-pressed="true"]{background:var(--surface);box-shadow:0 1px 3px rgba(74,63,58,.15)}
+
+.results{list-style:none;margin:0;padding:0}
+.result{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:12px 10px;margin:0 -10px;border-radius:var(--r-sm);cursor:pointer;border:0;background:none;width:calc(100% + 20px);text-align:left}
+.result:hover{background:var(--tint)}
+.result .pname{font-weight:700}
+.result .price{font-family:var(--font-display);font-size:20px;text-align:right;white-space:nowrap}
+.result .sub{font-size:13.5px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;grid-column:1/-1}
+.result.stale .price{color:var(--muted)}
+.results li+li{border-top:1px solid var(--line)}
+
+.form{display:flex;flex-direction:column;gap:18px}
+.form label.lab,.form legend{font-weight:700;font-size:15px;margin-bottom:6px;display:block;padding:0}
+.form fieldset{border:0;margin:0;padding:0}
+.form .field{box-shadow:none;border:1.5px solid var(--line);min-height:50px}
+.form .field:focus-within{border-color:var(--action)}
+.form .help{font-size:13px;color:var(--muted);margin-top:6px}
+.form .err{font-size:13.5px;color:var(--fg);background:color-mix(in srgb,var(--warn) 14%,var(--surface));padding:6px 10px;border-radius:8px;margin-top:6px}
+.radios{display:flex;gap:10px}
+.radios label{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;border-radius:var(--r-sm);border:1.5px solid var(--line);cursor:pointer;font-weight:650}
+.radios input{accent-color:var(--action);width:18px;height:18px}
+.radios label:has(input:checked){border-color:var(--action);background:var(--rose-soft)}
+.radios label.off{opacity:.5;cursor:not-allowed;text-decoration:line-through}
+.euro{font-weight:700;color:var(--muted);padding-right:10px}
+
+/* ---------- Marqueurs ---------- */
+.pin-wrap{background:none;border:0}
+.pin{position:absolute;left:0;top:0;transform:translate(-50%,-50%);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--surface);box-shadow:0 1px 4px rgba(74,63,58,.3);border:2px solid var(--powder);transition:transform .15s}
+.pin::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--action)}
+.pin:hover,.pin.sel{transform:translate(-50%,-50%) scale(1.18);border-color:var(--action)}
+.pin.sel{background:var(--rose-soft)}
+.tag{position:absolute;left:0;top:0;transform:translate(-50%,-100%);margin-top:-4px;white-space:nowrap;background:var(--surface);color:var(--fg);font-weight:750;font-size:14px;padding:5px 10px;border-radius:999px;box-shadow:0 1px 5px rgba(74,63,58,.28);border:1.5px solid var(--powder);font-variant-numeric:tabular-nums}
+.tag::after{content:"";position:absolute;left:50%;bottom:-6px;width:9px;height:9px;background:inherit;border-right:1.5px solid var(--powder);border-bottom:1.5px solid var(--powder);transform:translateX(-50%) rotate(45deg)}
+.tag.stale{color:var(--muted);border-style:dashed;font-weight:650}
+.tag.stale::after{border-style:dashed}
+.tag.none{color:var(--muted);font-weight:600;font-size:12px;padding:3px 8px;opacity:.9}
+.tag.sel{border-color:var(--action);background:var(--rose-soft);z-index:2}
+.tag.sel::after{border-color:var(--action)}
+.me{position:absolute;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:var(--action);border:3px solid var(--surface);box-shadow:0 0 0 6px color-mix(in srgb,var(--action) 22%,transparent)}
+@media (prefers-reduced-motion:no-preference){
+  .me{animation:breathe 2.6s ease-in-out infinite}
+  @keyframes breathe{50%{box-shadow:0 0 0 12px color-mix(in srgb,var(--action) 8%,transparent)}}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---------- Menu ---------- */
+.scrim{position:fixed;inset:0;background:rgba(42,34,31,.35);z-index:2000}
+.drawer{position:fixed;z-index:2001;top:0;bottom:0;right:0;width:min(340px,88vw);background:var(--surface);box-shadow:var(--shadow);padding:calc(env(safe-area-inset-top,0px) + 18px) max(22px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 22px) 22px;display:flex;flex-direction:column;gap:18px;overflow:auto}
+.drawer nav{display:flex;flex-direction:column}
+.drawer nav a{display:flex;align-items:center;gap:12px;padding:14px 8px;border-radius:var(--r-sm);text-decoration:none;color:var(--fg);font-weight:650;font-size:17px}
+.drawer nav a:hover,.drawer nav a[aria-current="page"]{background:var(--tint)}
+.drawer nav svg{width:20px;height:20px;color:var(--action);flex:none}
+.drawer .small{font-size:13.5px;color:var(--muted);margin:auto 0 0}
+
+/* ---------- Pages d'information ---------- */
+.page{position:fixed;inset:0;z-index:1500;background:var(--bg);overflow:auto;overscroll-behavior:contain}
+.page-head{position:sticky;top:env(safe-area-inset-top,0px);z-index:2;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.page-head .in{max-width:760px;margin:0 auto;padding-block:10px;padding-left:var(--gutter-l);padding-right:var(--gutter-r);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.page-main{max-width:760px;margin:0 auto;padding-block:28px 40px;padding-left:var(--gutter-l);padding-right:var(--gutter-r)}
+.page-main h1{font-size:clamp(32px,7vw,46px);font-weight:450;letter-spacing:-.01em}
+.page-main h2{font-size:clamp(23px,4.6vw,29px);margin-top:44px;padding-top:8px}
+.page-main h3{font-size:19px;margin-top:24px}
+.page-main p,.page-main li{max-width:66ch}
+.page-main ul{padding-left:1.2em}
+.page-main li+li{margin-top:6px}
+.lede{font-size:18px;color:var(--fg)}
+.updated{display:inline-flex;gap:8px;align-items:center;font-size:14px;color:var(--fg);background:var(--tint);padding:6px 12px;border-radius:999px;margin:14px 0 6px}
+.toc{background:var(--surface);border-radius:var(--r-md);padding:16px 20px;margin-top:22px;box-shadow:var(--shadow)}
+.toc ol{margin:8px 0 0;padding-left:1.3em}
+.toc a{color:var(--fg);text-underline-offset:3px}
+.src{font-size:13.5px;white-space:normal}
+.src a{color:var(--action);font-weight:650}
+mark.verify{background:color-mix(in srgb,var(--warn) 22%,var(--surface));color:var(--fg);font-weight:750;font-size:.82em;padding:1px 6px;border-radius:5px;white-space:nowrap}
+.tablewrap{overflow-x:auto;margin:14px 0;border-radius:var(--r-md);border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:14.5px;background:var(--surface)}
+th,td{text-align:left;padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
+thead th{border-top:0;background:var(--tint);font-weight:700;font-size:13.5px}
+.callout{background:var(--rose-soft);border-radius:var(--r-md);padding:18px 20px;margin-top:40px}
+.callout h2{margin-top:0;padding-top:0;font-size:22px}
+.sprig{color:var(--powder)}
+.verify-legend{border:1.5px dashed var(--warn);border-radius:var(--r-md);padding:12px 16px;font-size:14.5px;margin-top:18px}
+
+.toast{position:fixed;z-index:2500;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 16px);background:var(--fg);color:var(--bg);padding:12px 18px;border-radius:999px;box-shadow:var(--shadow);font-weight:650;font-size:15px;max-width:calc(100% - 32px)}
+</style>
+
+<div id="app">
+  <div id="map" role="region" aria-label="Carte des pharmacies"></div>
+
+  <div class="topbar" id="topbar">
+    <div class="brandrow">
+      <a class="brand" href="#" aria-label="Prix Pillule, retour à la carte">
+        <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 29c0-9 3-15 11-19-8 0-12 4-13 9C13 13 9 9 4 9c5 3 8 9 8 20z" fill="var(--powder)"/><circle cx="16" cy="6" r="3" fill="var(--action)"/></svg>
+        <b>Prix Pillule</b>
+      </a>
+      <button class="iconbtn" id="menuBtn" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="drawer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+      </button>
+    </div>
+
+    <div class="field" id="pillField">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="8" width="18" height="8" rx="4" transform="rotate(-35 12 12)"/><path d="M9.4 8.3l5.2 7.4" transform=""/></svg>
+      <label for="pillInput" class="sr-only">Quelle est votre pilule ?</label>
+      <input id="pillInput" type="text" placeholder="Quelle est votre pilule ?" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="pillList">
+      <button class="clear" id="pillClear" type="button" aria-label="Effacer la pilule" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <ul class="listbox" id="pillList" role="listbox" hidden></ul>
+    </div>
+
+    <div class="locbar" id="locbar">
+      <p class="locnote" id="locStatus" role="status">Recherche de votre position…</p>
+      <div class="field" id="locField" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0119 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+        <label for="locInput" class="sr-only">Ville ou adresse</label>
+        <input id="locInput" type="text" placeholder="Ville ou adresse" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="locList">
+        <button class="clear" id="locClose" type="button" aria-label="Fermer la recherche de lieu" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        <ul class="listbox" id="locList" role="listbox" hidden></ul>
+      </div>
+    </div>
+  </div>
+
+  <button class="iconbtn fab" id="placeBtn" aria-label="Changer de lieu" title="Changer de lieu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+  </button>
+
+  <p class="mapnotice" id="areaNotice" role="status" hidden></p>
+  <p class="mapnotice" id="tileNotice" hidden>Fond de carte IGN indisponible ici. Les pharmacies restent affichées.</p>
+
+  <section class="sheet" id="sheet" data-state="peek" aria-label="Informations">
+    <button class="sheet-handle" id="sheetHandle" aria-label="Agrandir le panneau" aria-expanded="false"><span></span></button>
+    <div class="sheet-body" id="sheetBody"></div>
+  </section>
+
+  <footer class="footer" id="footer">
+    <span>Prix indicatifs signalés par les utilisatrices, à vérifier en pharmacie.</span>
+    <span><a href="#confidentialite">Confidentialité</a> <span class="sep">·</span> <a href="#signaler">Signaler une erreur / Vous êtes pharmacien·ne ?</a></span>
+  </footer>
+</div>
+
+<!-- Menu -->
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" hidden aria-label="Menu">
+  <div class="spread">
+    <h2 style="font-size:24px">Prix Pillule</h2>
+    <button class="iconbtn" id="menuClose" aria-label="Fermer le menu" style="box-shadow:none;background:var(--tint)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <nav>
+    <a href="#" data-route=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 4L3 6.5v13L9 17l6 2.5 6-2.5v-13L15 6.5 9 4zM9 4v13M15 6.5v13"/></svg>Carte des prix</a>
+    <a href="#comprendre" data-route="comprendre"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5.5C6.5 4 9.5 4 12 6c2.5-2 5.5-2 8-.5V19c-2.5-1.5-5.5-1.5-8 .5-2.5-2-5.5-2-8-.5V5.5zM12 6v13.5"/></svg>Bien comprendre</a>
+    <a href="#confidentialite" data-route="confidentialite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z"/></svg>Confidentialité</a>
+    <a href="#signaler" data-route="signaler"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 21V4h11l-1.5 4L16 12H5"/></svg>Signaler une erreur</a>
+  </nav>
+  <div class="prefs">
+    <div>
+      <p class="eyebrow" id="themeLbl">Apparence</p>
+      <div class="seg" role="group" aria-labelledby="themeLbl">
+        <button type="button" data-theme-set="light">Clair</button><button type="button" data-theme-set="dark">Sombre</button><button type="button" data-theme-set="auto">Auto</button>
+      </div>
+    </div>
+    <label class="toggle" id="demoRow" hidden><input type="checkbox" id="demoToggle">Mode test (pharmacies et prix fictifs, version locale)</label>
+  </div>
+  <p class="small">Outil d'information citoyen et neutre. Aucune pharmacie n'est mise en avant, aucun lien commercial. Pharmacies : répertoire officiel FINESS (data.gouv.fr, mai 2026).</p>
+</aside>
+
+<!-- ================= Page « Bien comprendre » ================= -->
+<article class="page" id="page-comprendre" hidden aria-labelledby="t-comprendre">
+  <div class="page-head"><div class="in">
+    <a class="backbtn" href="#" style="text-decoration:none;color:var(--fg)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>Carte</a>
+    <svg class="sprig" width="54" height="24" viewBox="0 0 54 24" aria-hidden="true"><path d="M2 20C14 18 30 12 52 4" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M14 17c-1-5 2-8 6-9-1 4-2 7-6 9zM26 13c0-5 3-7 7-8-1 4-3 7-7 8zM38 9c1-4 4-6 8-6-2 3-4 5-8 6zM20 15c3 3 7 3 10 1-3-2-7-2-10-1zM32 11c3 2 7 2 10 0-3-2-7-2-10 0z" fill="currentColor"/></svg>
+  </div></div>
+  <div class="page-main">
+    <p class="eyebrow">Guide</p>
+    <h1 id="t-comprendre">Bien comprendre le prix de votre pilule</h1>
+    <p class="updated"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Dernière mise à jour : 30 octobre 2026</p>
+    <p class="lede">Pourquoi certaines pilules coûtent le même prix partout et d'autres non ? Qu'est-ce qui est gratuit, et pour qui ? Voici l'essentiel, avec un lien vers la source officielle pour chaque information.</p>
+    <p class="verify-legend">Les règles changent parfois. Les noms, statuts et prix cités ici ont été vérifiés le 30 octobre 2026 dans la base de données publique des médicaments et sur les sites officiels indiqués. En cas de doute, la source officielle fait foi.</p>
+
+    <nav class="toc" aria-label="Sommaire">
+      <strong>Sommaire</strong>
+      <ol>
+        <li><a href="#s-generations">Pilules remboursables et pilules à prix libre</a></li>
+        <li><a href="#s-26ans">La gratuité pour les moins de 26 ans</a></li>
+        <li><a href="#s-mutuelle">Le rôle de la complémentaire santé</a></li>
+        <li><a href="#s-honoraires">Les honoraires du pharmacien</a></li>
+        <li><a href="#s-renouvellement">Le renouvellement par le pharmacien</a></li>
+        <li><a href="#s-urgence">La contraception d'urgence</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="s-generations">1. Pilules remboursables et pilules à prix libre</h2>
+    <h3>Les « générations » de pilules</h3>
+    <p>Les pilules combinées (estroprogestatives) associent un estrogène, le plus souvent l'éthinylestradiol, et un progestatif. On les classe en « générations » selon le progestatif qu'elles contiennent. Il existe aussi des pilules progestatives seules, sans estrogène.
+      <span class="src">Source : <a href="https://www.has-sante.fr/jcms/c_1339215/fr/fiche-bum-contraceptifs-oraux-estroprogestatifs-preferez-les-pilules-de-1re-ou-2e-generation" target="_blank" rel="noopener">HAS, fiche « Contraceptifs oraux estroprogestatifs : préférez les pilules de 1re ou 2e génération »</a></span></p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Type</th><th>Progestatif (molécule)</th><th>Exemples commercialisés</th><th>Statut</th></tr></thead>
+        <tbody>
+          <tr><td>1re génération</td><td>Noréthistérone</td><td>Aucune pilule contraceptive de ce type n'est commercialisée aujourd'hui</td><td>—</td></tr>
+          <tr><td>2e génération</td><td>Lévonorgestrel</td><td>Minidril, Leeloo, Milevoni, Trinordiol, Adépal, Optilova, Optidril, Ludéal, Daily</td><td>Remboursable, prix fixé</td></tr>
+          <tr><td>3e génération</td><td>Désogestrel, gestodène, norgestimate</td><td>Varnoline, Mercilon, Desobel, Minesse, Perléane, Carlin, Triafemi, Optikinzy</td><td>Non remboursée, prix libre</td></tr>
+          <tr><td>4e génération</td><td>Drospirénone</td><td>Jasmine, Jasminelle, Yaz, Drospibel, Phizoé</td><td>Non remboursée, prix libre</td></tr>
+          <tr><td>Autres progestatifs</td><td>Chlormadinone, diénogest, nomégestrol</td><td>Belara, Qlaira, Zoely</td><td>Non remboursée, prix libre</td></tr>
+          <tr><td>Progestatif seul, remboursable</td><td>Lévonorgestrel, désogestrel 75 µg</td><td>Microval, Optimizette, Elfasette</td><td>Remboursable, prix fixé</td></tr>
+          <tr><td>Progestatif seul, non remboursé</td><td>Désogestrel 75 µg (Cérazette), drospirénone</td><td>Cérazette, Slinda</td><td>Non remboursée, prix libre</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="src">Source : <a href="https://base-donnees-publique.medicaments.gouv.fr/" target="_blank" rel="noopener">base de données publique des médicaments</a> (fichiers de données consultés le 30 octobre 2026 : statut de commercialisation, taux de remboursement et prix de chaque boîte). Liste non exhaustive : de nombreux génériques existent sous le nom de la molécule.</p>
+    <p>Exemples de prix fixés (prix public, honoraire compris) : Minidril, Leeloo ou Trinordiol coûtent 2,61 € la boîte d'un mois et 4,78 € la boîte de trois mois ; Microval 2,25 € et 3,96 €.
+      <span class="src">Source : <a href="https://base-donnees-publique.medicaments.gouv.fr/" target="_blank" rel="noopener">base de données publique des médicaments</a></span></p>
+
+    <h3>Prix fixé ou prix libre</h3>
+    <ul>
+      <li><strong>Pilule remboursable :</strong> son prix est fixé par les pouvoirs publics. Il est donc identique dans toutes les pharmacies. Elle est prise en charge par l'Assurance Maladie sur prescription, à 65 % à partir de 26 ans.
+        <span class="src">Source : <a href="https://www.ameli.fr/assure/remboursements/rembourse/contraception-ivg/contraception" target="_blank" rel="noopener">ameli.fr, Contraception : dispositifs et remboursements</a></span></li>
+      <li><strong>Pilule non remboursable :</strong> son prix est libre, chaque pharmacie le fixe elle-même. Il peut donc varier d'une officine à l'autre. C'est pour ces pilules que la comparaison a un intérêt. Ces prix ne figurent pas dans la base publique des médicaments.
+        <span class="src">Sources : <a href="https://www.economie.gouv.fr/dgccrf/les-fiches-pratiques/affichage-des-prix-des-medicaments-en-pharmacie-les-regles-connaitre" target="_blank" rel="noopener">DGCCRF (economie.gouv.fr), Affichage des prix des médicaments en pharmacie</a> · <a href="https://www.legifrance.gouv.fr/loda/id/JORFTEXT000030189026/" target="_blank" rel="noopener">Légifrance, arrêté du 28 novembre 2014</a></span></li>
+      <li><strong>Le prix doit être affiché :</strong> sur le produit ou en rayon s'il est visible, sinon sur la boîte ou dans un catalogue mis à votre disposition. Le prix indiqué est le prix total, honoraires éventuels compris. Sur demande, la pharmacie doit vous remettre un justificatif de paiement.
+        <span class="src">Sources : <a href="https://www.economie.gouv.fr/dgccrf/les-fiches-pratiques/affichage-des-prix-des-medicaments-en-pharmacie-les-regles-connaitre" target="_blank" rel="noopener">DGCCRF</a> · <a href="https://www.legifrance.gouv.fr/loda/id/JORFTEXT000030189026/" target="_blank" rel="noopener">Légifrance, arrêté du 28 novembre 2014</a></span></li>
+      <li>Les pilules de 3e génération qui étaient remboursées ne le sont plus depuis le 31 mars 2013 : la HAS a jugé leur intérêt insuffisant au regard des pilules de 1re et 2e génération.
+        <span class="src">Sources : <a href="https://www.has-sante.fr/jcms/c_1720982/fr/contraception-hormonale-orale-dispensation-en-officine" target="_blank" rel="noopener">HAS, Contraception hormonale orale : dispensation en officine</a> · <a href="https://www.has-sante.fr/upload/docs/application/pdf/2012-10/annexe_reevauation_c3g.pdf" target="_blank" rel="noopener">HAS, Réévaluation des contraceptifs oraux de troisième génération (PDF)</a></span></li>
+    </ul>
+
+    <h3>Ce que recommandent les autorités de santé</h3>
+    <p>La HAS recommande de prescrire en premier choix une pilule de 1re ou 2e génération. Les pilules de 3e et 4e génération exposent à un risque de thrombose veineuse plus élevé et n'ont pas montré de bénéfice supplémentaire. La HAS précise qu'il ne faut pas arrêter brutalement une pilule bien tolérée : parlez-en d'abord à un ou une professionnelle de santé.
+      <span class="src">Sources : <a href="https://www.has-sante.fr/jcms/c_1339215/fr/fiche-bum-contraceptifs-oraux-estroprogestatifs-preferez-les-pilules-de-1re-ou-2e-generation" target="_blank" rel="noopener">HAS, fiche bon usage</a> · <a href="https://www.has-sante.fr/jcms/c_1720982/fr/contraception-hormonale-orale-dispensation-en-officine" target="_blank" rel="noopener">HAS, Contraception hormonale orale : dispensation en officine</a> · <a href="https://archive.ansm.sante.fr/Dossiers/Pilules-estroprogestatives-et-risque-thrombotique/Annexes/(offset)/7" target="_blank" rel="noopener">ANSM, Pilules estroprogestatives et risque thrombotique (archive)</a></span></p>
+
+    <h2 id="s-26ans">2. La gratuité pour les moins de 26 ans</h2>
+    <ul>
+      <li>Depuis le 1er janvier 2022, la contraception est prise en charge à 100 %, sans avance de frais, pour les femmes jusqu'à 25 ans inclus.
+        <span class="src">Sources : <a href="https://sante.gouv.fr/archives/archives-presse/archives-breves/article/1er-janvier-2022-quelques-changements-a-retenir" target="_blank" rel="noopener">sante.gouv.fr, 1er janvier 2022 : quelques changements à retenir</a> · <a href="https://www.ameli.fr/assure/remboursements/rembourse/contraception-ivg/contraception" target="_blank" rel="noopener">ameli.fr, Contraception : dispositifs et remboursements</a></span></li>
+      <li><strong>La règle :</strong> pour être gratuite, la pilule doit être <strong>remboursable</strong> et prescrite sur une ordonnance isolée (sans autre médicament dessus). Ce n'est donc pas la génération qui compte, mais le remboursement. En pratique, cela concerne les pilules de 2e génération et les pilules progestatives remboursables comme Microval ou Optimizette.
+        <span class="src">Sources : <a href="https://www.ameli.fr/assure/remboursements/rembourse/contraception-ivg/contraception" target="_blank" rel="noopener">ameli.fr, Contraception : dispositifs et remboursements (page du 27 juillet 2026)</a> · <a href="https://base-donnees-publique.medicaments.gouv.fr/" target="_blank" rel="noopener">base de données publique des médicaments</a> (statut de remboursement)</span></li>
+      <li><strong>Ce qui est couvert :</strong> les contraceptifs remboursables (certaines pilules de 1re ou 2e génération, implant, stérilet, diaphragme, contraception injectable), la consultation de prescription et les examens biologiques liés, avec le tiers payant.
+        <span class="src">Sources : <a href="https://www.ameli.fr/pharmacien/exercice-professionnel/delivrance-produits-sante/regles-delivrance-prise-charge/delivrance-contraception" target="_blank" rel="noopener">ameli.fr, Délivrance de la contraception (pharmaciens)</a> · <a href="https://www.ameli.fr/assure/remboursements/rembourse/contraception-ivg/contraception" target="_blank" rel="noopener">ameli.fr, Contraception : dispositifs et remboursements</a></span></li>
+      <li><strong>Ce qui n'est pas couvert :</strong> les pilules non remboursables, c'est-à-dire toutes les pilules de 3e et 4e génération, mais aussi quelques autres : Qlaira, Zoely, Belara, et les pilules progestatives Cérazette et Slinda. Même avant 26 ans, leur prix reste entièrement à votre charge, sauf prise en charge par votre complémentaire santé. Exemple parlant : Cérazette et Optimizette contiennent la même molécule (désogestrel 75 µg), mais seule Optimizette est remboursable, donc gratuite avant 26 ans.
+        <span class="src">Source : <a href="https://www.ameli.fr/assure/remboursements/rembourse/contraception-ivg/contraception" target="_blank" rel="noopener">ameli.fr, Contraception : dispositifs et remboursements</a></span></li>
+      <li>Une ordonnance reste nécessaire pour les pilules. Les mineures peuvent demander le secret : la délivrance est alors confidentielle.
+        <span class="src">Source : <a href="https://www.ameli.fr/pharmacien/exercice-professionnel/delivrance-produits-sante/regles-delivrance-prise-charge/delivrance-contraception" target="_blank" rel="noopener">ameli.fr, Délivrance de la contraception (pharmaciens)</a></span></li>
+      <li>Les moins de 26 ans peuvent aussi obtenir gratuitement en pharmacie, sans ordonnance, les préservatifs de certaines marques (une boîte par délivrance). La liste des marques est tenue à jour par l'Assurance Maladie.
+        <span class="src">Sources : <a href="https://www.ameli.fr/assure/remboursements/rembourse/contraception-ivg/contraception" target="_blank" rel="noopener">ameli.fr, Contraception : dispositifs et remboursements</a> · <a href="https://www.ameli.fr/pharmacien/exercice-professionnel/delivrance-produits-sante/regles-delivrance-prise-charge/delivrance-contraception" target="_blank" rel="noopener">ameli.fr, liste des marques (pharmaciens)</a></span></li>
+    </ul>
+
+    <h2 id="s-mutuelle">3. Le rôle de la complémentaire santé</h2>
+    <ul>
+      <li><strong>Pilule remboursable, à partir de 26 ans :</strong> l'Assurance Maladie rembourse 65 %. La part restante, appelée ticket modérateur, peut être remboursée par votre complémentaire santé (mutuelle).
+        <span class="src">Sources : <a href="https://www.ameli.fr/assure/remboursements/rembourse/contraception-ivg/contraception" target="_blank" rel="noopener">ameli.fr, Contraception</a> · <a href="https://www.ameli.fr/assure/remboursements/reste-charge/ticket-moderateur" target="_blank" rel="noopener">ameli.fr, Qu'est-ce que le ticket modérateur ?</a></span></li>
+      <li><strong>Pilule non remboursée :</strong> les mutuelles peuvent prendre en charge tout ou partie de son prix, mais seulement si votre contrat le prévoit. Certains contrats proposent un montant annuel pour la contraception, d'autres rien du tout. Renseignez-vous auprès de votre mutuelle.
+        <span class="src">Source : <a href="https://www.ameli.fr/assure/remboursements/rembourse/contraception-ivg/contraception" target="_blank" rel="noopener">ameli.fr, Contraception : dispositifs et remboursements</a></span></li>
+      <li><strong>Concrètement :</strong> consultez le tableau des garanties de votre contrat et demandez un justificatif de paiement à la pharmacie, qu'elle doit vous remettre sur demande pour un médicament non remboursable.
+        <span class="src">Sources : <a href="https://www.economie.gouv.fr/dgccrf/les-fiches-pratiques/assurance-complementaire-sante-comparez-les-offres" target="_blank" rel="noopener">DGCCRF, Assurance complémentaire santé : comparez les offres</a> · <a href="https://www.economie.gouv.fr/dgccrf/les-fiches-pratiques/affichage-des-prix-des-medicaments-en-pharmacie-les-regles-connaitre" target="_blank" rel="noopener">DGCCRF, Affichage des prix des médicaments</a></span></li>
+    </ul>
+
+    <h2 id="s-honoraires">4. Les honoraires de dispensation du pharmacien</h2>
+    <ul>
+      <li>Pour les médicaments remboursables, le pharmacien perçoit des <strong>honoraires de dispensation</strong> fixés par la convention avec l'Assurance Maladie : un honoraire par boîte, un honoraire par ordonnance, et d'autres selon les cas. Ils sont inclus dans le prix payé et pris en charge dans les mêmes conditions que le médicament.
+        <span class="src">Source : <a href="https://www.ameli.fr/pharmacien/exercice-professionnel/remunerations/honoraires-actes-pharmaciens" target="_blank" rel="noopener">ameli.fr, Les honoraires et actes des pharmaciens</a></span></li>
+      <li>En métropole, l'honoraire par boîte est de 1,02 € TTC. Un honoraire de 2,76 € TTC existe pour certains médicaments en conditionnement trimestriel, mais les pilules n'en font pas partie : leurs boîtes de 3 mois portent elles aussi un honoraire de 1,02 €. L'honoraire à l'ordonnance est de 0,61 € TTC (montants de la page ameli mise à jour le 17 avril 2026).
+        <span class="src">Sources : <a href="https://www.ameli.fr/pharmacien/exercice-professionnel/remunerations/honoraires-actes-pharmaciens" target="_blank" rel="noopener">ameli.fr, Les honoraires et actes des pharmaciens</a> · <a href="https://base-donnees-publique.medicaments.gouv.fr/" target="_blank" rel="noopener">base de données publique des médicaments</a> (honoraire indiqué pour chaque boîte)</span></li>
+      <li><strong>Effet sur le prix :</strong> une boîte de 3 mois ne porte qu'un seul honoraire. Pour Minidril par exemple, trois boîtes d'un mois coûtent 3 × 2,61 € = 7,83 €, contre 4,78 € pour une boîte de trois mois. Si votre ordonnance le permet, demandez la boîte de 3 mois. Avant 26 ans, c'est gratuit dans les deux cas.
+        <span class="src">Source : <a href="https://base-donnees-publique.medicaments.gouv.fr/" target="_blank" rel="noopener">base de données publique des médicaments</a></span></li>
+      <li><strong>Pilules non remboursables :</strong> la pharmacie peut facturer des honoraires, mais le prix affiché doit être le prix total, honoraires compris. Ce que vous lisez est donc ce que vous payez.
+        <span class="src">Source : <a href="https://www.economie.gouv.fr/dgccrf/les-fiches-pratiques/affichage-des-prix-des-medicaments-en-pharmacie-les-regles-connaitre" target="_blank" rel="noopener">DGCCRF, Affichage des prix des médicaments en pharmacie</a></span></li>
+    </ul>
+
+    <h2 id="s-renouvellement">5. Le renouvellement d'ordonnance par le pharmacien</h2>
+    <p>Votre ordonnance de pilule est arrivée à expiration et vous n'avez pas encore pu revoir votre médecin ou votre sage-femme ? Le pharmacien peut, sous conditions, vous délivrer votre pilule pour éviter une interruption :</p>
+    <ul>
+      <li>l'ordonnance date de moins d'un an et toute la quantité prescrite a déjà été délivrée ;</li>
+      <li>la délivrance supplémentaire est possible une seule fois, pour 6 mois maximum, non renouvelable ;</li>
+      <li>le pharmacien ne délivre pas plus de 3 mois de traitement à la fois ;</li>
+      <li>il inscrit la mention « Dispensation supplémentaire de contraceptifs oraux » sur l'ordonnance et vous rappelle de consulter ;</li>
+      <li>si un infirmier ou une infirmière a déjà renouvelé votre pilule, les deux renouvellements comptent ensemble dans la limite de 6 mois.</li>
+    </ul>
+    <p class="src">Sources : <a href="https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000026200416" target="_blank" rel="noopener">Légifrance, décret n° 2012-883 du 17 juillet 2012</a> · <a href="https://www.ameli.fr/pharmacien/exercice-professionnel/delivrance-produits-sante/regles-delivrance-prise-charge/delivrance-contraception" target="_blank" rel="noopener">ameli.fr, Délivrance de la contraception (pharmaciens)</a> · <a href="https://www.ameli.fr/infirmier/exercice-liberal/prescription-prise-charge/regles-exercice-formalites/droit-renouvellement-contraceptifs-oraux" target="_blank" rel="noopener">ameli.fr, Droit de renouvellement des contraceptifs oraux (infirmiers)</a></p>
+    <p>Les sages-femmes peuvent elles aussi prescrire une contraception.
+      <span class="src">Source : <a href="https://www.ameli.fr/sage-femme/exercice-liberal/presciption-prise-charge/regles-exercice-formalites/contraception" target="_blank" rel="noopener">ameli.fr, La prescription de contraceptifs (sages-femmes)</a></span></p>
+
+    <h2 id="s-urgence">6. La contraception d'urgence</h2>
+    <ul>
+      <li><strong>Deux pilules d'urgence :</strong> le lévonorgestrel, à prendre au plus tard dans les 3 jours après le rapport, et l'ulipristal acétate, au plus tard dans les 5 jours. Dans les deux cas, le plus tôt est le mieux.
+        <span class="src">Source : <a href="https://www.ameli.fr/assure/sante/themes/contraception-urgence/comprendre-contraception-urgence" target="_blank" rel="noopener">ameli.fr, Quelles méthodes de contraception d'urgence ?</a></span></li>
+      <li><strong>Gratuite et sans ordonnance :</strong> depuis le 1er janvier 2023, la contraception d'urgence hormonale est délivrée en pharmacie gratuitement, sans ordonnance et sans avance de frais, aux mineures comme aux majeures.
+        <span class="src">Sources : <a href="https://www.ameli.fr/assure/sante/themes/contraception-urgence/contraception-urgence-gratuite" target="_blank" rel="noopener">ameli.fr, Contraception d'urgence hormonale gratuite en pharmacie</a> · <a href="https://www.service-public.fr/particuliers/actualites/A16291" target="_blank" rel="noopener">service-public.fr, actualité A16291</a></span>
+        Les mineures peuvent demander le secret de la délivrance.
+        <span class="src">Source : <a href="https://www.ameli.fr/pharmacien/exercice-professionnel/delivrance-produits-sante/regles-delivrance-prise-charge/delivrance-contraception" target="_blank" rel="noopener">ameli.fr, Délivrance de la contraception (pharmaciens), page mise à jour le 22 juillet 2026</a></span></li>
+      <li><strong>Prix :</strong> en pharmacie, dans ce cadre, vous ne payez rien. Pour information, le prix public officiel est de 3,50 € à 4,28 € pour le lévonorgestrel 1,5 mg (Norlevo et génériques) et de 12,61 € pour l'ulipristal acétate 30 mg (ellaOne), honoraire compris.
+        <span class="src">Source : <a href="https://base-donnees-publique.medicaments.gouv.fr/" target="_blank" rel="noopener">base de données publique des médicaments</a> (consultée le 30 octobre 2026)</span></li>
+      <li><strong>Le stérilet au cuivre</strong> peut aussi servir de contraception d'urgence, jusqu'à 5 jours après le rapport. Il nécessite une prescription et une pose par un médecin ou une sage-femme.
+        <span class="src">Source : <a href="https://www.ameli.fr/assure/sante/themes/contraception-urgence/comprendre-contraception-urgence" target="_blank" rel="noopener">ameli.fr</a></span></li>
+      <li>Les centres de santé sexuelle délivrent aussi la contraception d'urgence, gratuitement et de façon anonyme pour les mineures. Le Fil Santé Jeunes répond de façon anonyme et gratuite au 0 800 235 236.
+        <span class="src">Sources : <a href="https://www.ameli.fr/assure/sante/assurance-maladie/prevention-depistages/contraception-gratuite-anonyme-mineures" target="_blank" rel="noopener">ameli.fr, Contraception d'urgence hormonale gratuite</a> · <a href="https://www.ameli.fr/sites/default/files/Documents/Contraception-urgence-Metro.PDF" target="_blank" rel="noopener">ameli.fr, dépliant contraception d'urgence (PDF)</a></span></li>
+    </ul>
+
+    <div class="callout">
+      <h2>Un rappel important</h2>
+      <p>Prix Pillule vous aide à comprendre et à comparer des prix. Le site ne remplace pas l'avis d'un médecin, d'une sage-femme ou d'un pharmacien. Pour choisir ou changer de contraception, parlez-en avec un ou une professionnelle de santé.</p>
+    </div>
+  </div>
+</article>
+
+<!-- ================= Page Confidentialité ================= -->
+<article class="page" id="page-confidentialite" hidden aria-labelledby="t-conf">
+  <div class="page-head"><div class="in">
+    <a class="backbtn" href="#" style="text-decoration:none;color:var(--fg)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>Carte</a>
+  </div></div>
+  <div class="page-main">
+    <p class="eyebrow">Confidentialité</p>
+    <h1 id="t-conf">Vos données restent les vôtres</h1>
+    <h2>Votre position</h2>
+    <p>Si vous l'autorisez, votre navigateur nous donne votre position. Elle sert uniquement à centrer la carte et à calculer la distance des pharmacies, directement sur votre appareil. Elle n'est jamais envoyée, enregistrée ni partagée.</p>
+    <p>Si vous tapez une ville ou une adresse, ce texte est envoyé au service public de géocodage de l'IGN (Géoplateforme) pour trouver le lieu sur la carte. Aucune autre information ne l'accompagne.</p>
+    <h2>Vos contributions</h2>
+    <p>Les prix que vous signalez sont anonymes : pas de compte, pas de nom, pas d'adresse e-mail. Nous enregistrons seulement la pharmacie, la pilule, le prix, le format de la boîte et la date.</p>
+    <div id="privacyShared" hidden>
+      <p>Les prix partagés sont enregistrés sur notre serveur pour être visibles par toutes. Ils ne contiennent aucune information sur vous : impossible de savoir qui a partagé quel prix.</p>
+      <p>Pour éviter les abus (envois en masse, faux prix), le serveur limite le nombre d'actions par connexion. Il utilise pour cela une empreinte chiffrée et irréversible de votre adresse IP, effacée au bout de 7 jours au plus. Votre adresse IP elle-même n'est pas enregistrée par le site.</p>
+      <p>Le site est hébergé par GitHub Pages et les prix par Supabase. Comme tout hébergeur, ils peuvent tenir des journaux techniques de connexion.</p>
+    </div>
+    <div id="privacyLocal">
+      <p>Dans cet aperçu, vos contributions sont gardées uniquement dans votre navigateur. Vous pouvez les effacer à tout moment.</p>
+      <p><button class="btn ghost small" id="wipeBtn" type="button">Effacer mes contributions</button> <span id="wipeMsg" role="status"></span></p>
+    </div>
+    <h2>Ni cookie, ni traceur</h2>
+    <p>Le site n'utilise aucun cookie, aucun outil de mesure d'audience et aucun traceur publicitaire. Le fond de carte est fourni par l'IGN (Géoplateforme). Dans cette version de test, les polices de caractères et la bibliothèque de carte sont chargées depuis Google Fonts et unpkg, qui voient passer, comme tout serveur web, l'adresse IP de votre appareil.</p>
+  </div>
+</article>
+
+<!-- ================= Page Signaler ================= -->
+<article class="page" id="page-signaler" hidden aria-labelledby="t-sig">
+  <div class="page-head"><div class="in">
+    <a class="backbtn" href="#" style="text-decoration:none;color:var(--fg)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>Carte</a>
+  </div></div>
+  <div class="page-main">
+    <p class="eyebrow">Contact</p>
+    <h1 id="t-sig">Signaler une erreur</h1>
+    <h2>Un prix est faux ou dépassé ?</h2>
+    <p>Le plus simple : ouvrez la fiche de la pharmacie sur la carte et ajoutez le prix que vous avez constaté. Le prix le plus récent s'affiche en premier. Si un prix est juste, confirmez-le avec le bouton « Ce prix est toujours bon ».</p>
+    <h2>Vous êtes pharmacien·ne ?</h2>
+    <p>Vous pouvez nous signaler une erreur sur votre officine, demander la correction d'un prix ou nous transmettre vos prix. Les prix affichés restent indicatifs et ne constituent pas un classement des pharmacies.</p>
+    <p>Le nom et l'adresse des pharmacies proviennent du répertoire officiel FINESS, publié sur data.gouv.fr. S'ils sont inexacts, la correction se fait d'abord dans FINESS ; prévenez-nous aussi pour que nous mettions la carte à jour.</p>
+    <div class="contact">
+      <span class="eyebrow">Nous écrire</span>
+      <a id="contactMail" class="mail" href="mailto:thepannacottafactory@gmail.com">thepannacottafactory@gmail.com</a>
+      <button class="btn ghost small" id="copyMail" type="button">Copier l'adresse</button>
+      <span id="copyMsg" role="status" style="font-size:14px"></span>
+    </div>
+    <h2>Une information du guide vous semble inexacte ?</h2>
+    <p>Écrivez-nous à thepannacottafactory@gmail.com, en indiquant si possible la source officielle à jour. Nous corrigeons rapidement.</p>
+  </div>
+</article>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+"use strict";
+/* =====================================================================
+   CONFIGURATION
+   ===================================================================== */
+const CONFIG = {
+  tilesUrl: "https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&STYLE=normal&FORMAT=image/png&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}",
+  geocodeUrl: "https://data.geopf.fr/geocodage/search",
+  defaultCenter: [48.8566, 2.3522],   // Paris, en attendant la position
+  defaultZoom: 14,
+  freshDays: 90,    // < 3 mois : prix affiché normalement
+  staleDays: 180,   // 3 à 6 mois : « à confirmer » ; au-delà : masqué par défaut
+  concordanceEuros: 0.10, // deux prix à 10 centimes près sont considérés concordants
+  storageKey: "prixpillule.v1",
+  pharmaciesUrl: "data/pharmacies/", // tuiles FINESS d'1° × 1° : index.json + "{lat}_{lon}.json"
+  minZoomReal: 13,   // en dessous, trop de pharmacies : on invite à zoomer
+  maxMarkers: 400,   // marqueurs affichés au maximum (les plus proches du centre)
+  contact: "thepannacottafactory@gmail.com",
+  // Prix partagés via Supabase (Project Settings > API) : URL du projet et clé publique
+  // (« anon » ou « publishable »). Cette clé est faite pour être publique : la base n'autorise
+  // que les fonctions get_reports, add_report et vote (voir supabase/schema.sql).
+  supabaseUrl: "",
+  supabaseKey: ""
+};
+
+/* =====================================================================
+   RÉFÉRENTIEL DES PILULES (noms réels commercialisés en France)
+   Vérifié dans les fichiers de la base de données publique des médicaments (BDPM) le 30/10/2026 :
+   statut « Commercialisée », boîtes encore déclarées en commercialisation, taux de remboursement.
+   - formats : boîtes réellement disponibles (1 = 1 plaquette / 1 mois, 3 = 3 plaquettes / 3 mois)
+   - prixFixe : prix public TTC officiel, honoraire de dispensation de 1,02 € compris (BDPM)
+   - base : prix de référence FICTIFS servant uniquement à générer les données de démonstration
+   En production, ce référentiel peut être régénéré automatiquement depuis les fichiers BDPM
+   (CIS_bdpm.txt, CIS_CIP_bdpm.txt, CIS_COMPO_bdpm.txt).
+   ===================================================================== */
+const PILULES = [
+  // 2e génération — remboursables, prix fixé
+  {id:"minidril",   nom:"Minidril",   gen:"2e génération", mol:"Lévonorgestrel + éthinylestradiol", remboursable:true, formats:[1,3], prixFixe:{1:2.61,3:4.78}},
+  {id:"leeloo",     nom:"Leeloo",     gen:"2e génération", mol:"Lévonorgestrel + éthinylestradiol", remboursable:true, formats:[1,3], prixFixe:{1:2.61,3:4.78}},
+  {id:"milevoni",   nom:"Milevoni",   gen:"2e génération", mol:"Lévonorgestrel + éthinylestradiol", remboursable:true, formats:[1,3], prixFixe:{1:2.61,3:4.78}},
+  {id:"trinordiol", nom:"Trinordiol", gen:"2e génération", mol:"Lévonorgestrel + éthinylestradiol (triphasique)", remboursable:true, formats:[1,3], prixFixe:{1:2.61,3:4.78}},
+  {id:"adepal",     nom:"Adépal",     gen:"2e génération", mol:"Lévonorgestrel + éthinylestradiol (biphasique)", remboursable:true, formats:[1,3], prixFixe:{1:2.61,3:4.78}},
+  {id:"optilova",   nom:"Optilova",   gen:"2e génération", mol:"Lévonorgestrel + éthinylestradiol", remboursable:true, formats:[3], prixFixe:{3:4.78}},
+  {id:"optidril",   nom:"Optidril",   gen:"2e génération", mol:"Lévonorgestrel + éthinylestradiol", remboursable:true, formats:[3], prixFixe:{3:4.78}},
+  {id:"ludeal",     nom:"Ludéal",     gen:"2e génération", mol:"Lévonorgestrel + éthinylestradiol", remboursable:true, formats:[3], prixFixe:{3:4.11}},
+  {id:"daily",      nom:"Daily",      gen:"2e génération", mol:"Lévonorgestrel + éthinylestradiol (triphasique)", remboursable:true, formats:[3], prixFixe:{3:4.11}},
+  // Progestatifs seuls remboursables
+  {id:"microval",   nom:"Microval",   gen:"Progestatif seul", mol:"Lévonorgestrel", remboursable:true, formats:[1,3], prixFixe:{1:2.25,3:3.96}},
+  {id:"optimizette",nom:"Optimizette",gen:"Progestatif seul", mol:"Désogestrel 75 µg", remboursable:true, formats:[3], prixFixe:{3:4.03}},
+  {id:"elfasette",  nom:"Elfasette",  gen:"Progestatif seul", mol:"Désogestrel 75 µg", remboursable:true, formats:[1,3], prixFixe:{1:2.25,3:3.96}},
+  // 3e génération — prix libre
+  {id:"varnoline",  nom:"Varnoline",  gen:"3e génération", mol:"Désogestrel + éthinylestradiol", remboursable:false, formats:[1,3], base:{1:6.5,3:16}},
+  {id:"mercilon",   nom:"Mercilon",   gen:"3e génération", mol:"Désogestrel + éthinylestradiol", remboursable:false, formats:[1,3], base:{1:7.5,3:18.5}},
+  {id:"desobel",    nom:"Desobel",    gen:"3e génération", mol:"Désogestrel + éthinylestradiol", remboursable:false, formats:[3], base:{3:11.5}},
+  {id:"minesse",    nom:"Minesse",    gen:"3e génération", mol:"Gestodène + éthinylestradiol", remboursable:false, formats:[1,3], base:{1:8,3:20}},
+  {id:"perleane",   nom:"Perléane",   gen:"3e génération", mol:"Gestodène + éthinylestradiol (triphasique)", remboursable:false, formats:[1,3], base:{1:7,3:17}},
+  {id:"carlin",     nom:"Carlin",     gen:"3e génération", mol:"Gestodène + éthinylestradiol", remboursable:false, formats:[3], base:{3:12}},
+  {id:"triafemi",   nom:"Triafemi",   gen:"3e génération", mol:"Norgestimate + éthinylestradiol (triphasique)", remboursable:false, formats:[3], base:{3:15}},
+  {id:"optikinzy",  nom:"Optikinzy",  gen:"3e génération", mol:"Norgestimate + éthinylestradiol", remboursable:false, formats:[3], base:{3:13}},
+  // 4e génération et autres progestatifs — prix libre
+  {id:"jasmine",    nom:"Jasmine",    gen:"4e génération", mol:"Drospirénone + éthinylestradiol", remboursable:false, formats:[3], base:{3:33}},
+  {id:"jasminelle", nom:"Jasminelle", gen:"4e génération", mol:"Drospirénone + éthinylestradiol", remboursable:false, formats:[3], base:{3:34}},
+  {id:"yaz",        nom:"Yaz",        gen:"4e génération", mol:"Drospirénone + éthinylestradiol", remboursable:false, formats:[3], base:{3:37}},
+  {id:"drospibel",  nom:"Drospibel",  gen:"4e génération", mol:"Drospirénone + éthinylestradiol", remboursable:false, formats:[3], base:{3:23}},
+  {id:"phizoe",     nom:"Phizoé",     gen:"4e génération", mol:"Drospirénone + éthinylestradiol", remboursable:false, formats:[1,3], base:{1:9.5,3:24}},
+  {id:"belara",     nom:"Belara",     gen:"Autre progestatif", mol:"Chlormadinone + éthinylestradiol", remboursable:false, formats:[3], base:{3:28}},
+  {id:"qlaira",     nom:"Qlaira",     gen:"Autre progestatif", mol:"Diénogest + valérate d'estradiol", remboursable:false, formats:[3], base:{3:41}},
+  {id:"zoely",      nom:"Zoely",      gen:"Autre progestatif", mol:"Nomégestrol + estradiol", remboursable:false, formats:[1,3], base:{1:15,3:38}},
+  {id:"slinda",     nom:"Slinda",     gen:"Progestatif seul", mol:"Drospirénone 4 mg", remboursable:false, formats:[1,3], base:{1:14.5,3:37}},
+  {id:"cerazette",  nom:"Cérazette",  gen:"Progestatif seul", mol:"Désogestrel 75 µg", remboursable:false, formats:[1,3], base:{1:9,3:22}},
+];
+const PILL_BY_ID = Object.fromEntries(PILULES.map(p => [p.id, p]));
+
+/* =====================================================================
+   SOURCE DE DONNÉES (démo)
+   Pour passer en production, remplacer DemoSource par une implémentation qui :
+   - lit les pharmacies depuis l'extrait FINESS (catégorie officine) : {finess, nom, adresse, cp, ville, lat, lon} ;
+   - interroge une API pour les signalements : GET /reports?finess=…, POST /reports, POST /reports/:id/confirm.
+   Le reste de l'application n'utilise que ces quatre méthodes asynchrones.
+   ===================================================================== */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+
+const DEMO_PHARMACIES = [
+  ["Pharmacie des Tilleuls","12 allée des Songes"],["Pharmacie du Lavoir","3 place du Lavoir-Fictif"],
+  ["Pharmacie des Glycines","48 rue des Glycines-Imaginaires"],["Pharmacie de la Fontaine aux Merles","7 square des Merles"],
+  ["Pharmacie des Trois Platanes","21 cours des Platanes"],["Pharmacie du Vieux Moulin","5 chemin du Moulin-Rêvé"],
+  ["Pharmacie de l'Orangerie","66 avenue de l'Orangerie"],["Pharmacie des Coquelicots","14 rue des Coquelicots"],
+  ["Pharmacie du Petit Pont","2 quai du Petit-Pont-Fictif"],["Pharmacie de la Charmille","33 rue de la Charmille"],
+  ["Pharmacie des Iris","9 impasse des Iris"],["Pharmacie du Belvédère","101 boulevard du Belvédère"],
+  ["Pharmacie de la Roseraie","27 rue de la Roseraie"],["Pharmacie des Alouettes","40 allée des Alouettes"],
+  ["Pharmacie du Cèdre Bleu","18 place du Cèdre-Bleu"],["Pharmacie des Lilas d'Antan","6 rue des Lilas-d'Antan"],
+  ["Pharmacie de la Source Claire","55 rue de la Source-Claire"],["Pharmacie des Hirondelles","11 passage des Hirondelles"],
+  ["Pharmacie du Verger Doux","72 avenue du Verger"],["Pharmacie de la Luciole","4 rue de la Luciole"],
+  ["Pharmacie du Saule Pleureur","29 rue du Saule"],["Pharmacie des Myosotis","15 allée des Myosotis"]
+];
+
+const DemoSource = {
+  // Les pharmacies fictives sont disposées autour du centre choisi (position ou ville).
+  async getPharmaciesAround(center){
+    const rnd = mulberry32(20261030);
+    return DEMO_PHARMACIES.map(([nom, adresse], i) => {
+      const ang = rnd()*Math.PI*2, dist = 0.15 + Math.sqrt(rnd())*1.9; // km
+      const dLat = (dist*Math.cos(ang))/111, dLon = (dist*Math.sin(ang))/(111*Math.cos(center[0]*Math.PI/180));
+      return { finess:"DEMO" + String(i+1).padStart(5,"0"), nom, adresse, ville:"Adresse fictive", lat:center[0]+dLat, lon:center[1]+dLon, demo:true };
+    });
+  },
+  async getReportsMany(ids){
+    const local = await LocalReports.getReportsMany(ids);
+    return Object.fromEntries(ids.map(id => [id, demoReportsFor(id).map(r => LocalReports.withVotes(r)).concat(local[id] || [])]));
+  },
+  addReport: data => LocalReports.addReport(data),
+  vote: (id, kind) => LocalReports.vote(id, kind)
+};
+
+/* PRIX PARTAGÉS
+   ApiReports : serveur commun (serveur/server.js), les prix sont visibles par toutes les utilisatrices.
+   LocalReports : repli quand aucun serveur ne répond (aperçu publié sur claude.ai, fichier ouvert seul) ;
+   les prix restent alors dans ce navigateur. Les deux exposent les mêmes méthodes. */
+const ApiReports = {
+  base: "api/",
+  async check(){
+    try {
+      const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 2500);
+      const r = await fetch(this.base + "health", { signal: ctrl.signal, cache: "no-store" }); clearTimeout(t);
+      return r.ok && (await r.json()).ok === true;
+    } catch(e) { return false; }
+  },
+  async call(path, body){
+    const r = await fetch(this.base + path, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(body || {}) });
+    let data = {}; try { data = await r.json(); } catch(e) {}
+    if (!r.ok) throw new Error(data.error || "Le serveur n'a pas pu enregistrer votre action. Réessayez.");
+    return data;
+  },
+  async getReportsMany(ids){
+    if (!ids.length) return {};
+    const { reports } = await this.call("reports/query", { ids });
+    const out = {}; reports.forEach(r => { (out[r.finess] ||= []).push(r); }); return out;
+  },
+  async addReport({ finess, pilule, format, prix }){ return (await this.call("reports", { finess, pilule, format, prix })).report; },
+  async vote(id, kind){ return (await this.call(`reports/${encodeURIComponent(id)}/${kind}`)).report; }
+};
+// Supabase : appelle les fonctions de supabase/schema.sql via l'API REST (aucune bibliothèque nécessaire)
+const SupabaseReports = {
+  async rpc(fn, body, signal){
+    const headers = { "Content-Type":"application/json", apikey: CONFIG.supabaseKey };
+    if (CONFIG.supabaseKey.startsWith("eyJ")) headers.Authorization = "Bearer " + CONFIG.supabaseKey; // ancienne clé « anon »
+    const r = await fetch(`${CONFIG.supabaseUrl.replace(/\/$/, "")}/rest/v1/rpc/${fn}`, { method:"POST", headers, body: JSON.stringify(body), signal });
+    let data = null; try { data = await r.json(); } catch(e) {}
+    if (!r.ok) throw new Error((data && data.message) || "Le serveur n'a pas pu enregistrer votre action. Réessayez.");
+    return data;
+  },
+  async check(){
+    if (!CONFIG.supabaseUrl || !CONFIG.supabaseKey) return false;
+    try { const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 4000); await this.rpc("get_reports", { ids: [] }, ctrl.signal); clearTimeout(t); return true; }
+    catch(e) { return false; }
+  },
+  async getReportsMany(ids){
+    if (!ids.length) return {};
+    const rows = await this.rpc("get_reports", { ids });
+    const out = {}; rows.forEach(r => { r.prix = +r.prix; (out[r.finess] ||= []).push(r); }); return out;
+  },
+  async addReport({ finess, pilule, format, prix }){ return this.rpc("add_report", { p_finess: finess, p_pilule: pilule, p_format: format, p_prix: prix }); },
+  async vote(id, kind){ return this.rpc("vote", { p_id: id, p_kind: kind }); }
+};
+// Serveur des prix partagés actif : Supabase si configuré et joignable, sinon le serveur local (serveur/server.js)
+let SharedReports = ApiReports;
+
+const LocalReports = {
+  withVotes(r){
+    const v = Store.votes(r.id); if (!v) return r;
+    return { ...r, confirmations:(r.confirmations || 1) + (v.c || 0), lastConfirmed: v.cd || r.lastConfirmed || null, outdated:(r.outdated || 0) + (v.o || 0), lastOutdated: v.od || r.lastOutdated || null };
+  },
+  async getReportsMany(ids){
+    const set = new Set(ids), out = {};
+    Store.localReports().forEach(r => { if (set.has(r.finess)) (out[r.finess] ||= []).push(this.withVotes(r)); });
+    return out;
+  },
+  async addReport({ finess, pilule, format, prix }){
+    const r = { id:"l-" + Date.now().toString(36) + Math.random().toString(36).slice(2,6), finess, pilule, format, prix, date:new Date().toISOString(), confirmations:1, outdated:0 };
+    Store.addReport(r); return r;
+  },
+  async vote(id, kind){ Store.addVote(id, kind); }
+};
+
+/* Source réelle : officines du répertoire FINESS (extraction Etalab du 04/05/2026, data.gouv.fr),
+   converties en lat/lon et découpées en tuiles d'1°. Aucun prix d'exemple : seuls les prix
+   partagés par les utilisatrices s'affichent. */
+const RealSource = {
+  _index: null, _cells: {},
+  async index(){
+    if (!this._index) this._index = fetch(CONFIG.pharmaciesUrl + "index.json").then(r => { if (!r.ok) throw new Error("index"); return r.json(); }).catch(e => { this._index = null; throw e; });
+    return this._index;
+  },
+  async cell(key){
+    if (!this._cells[key]) {
+      this._cells[key] = this.index().then(idx => !idx.cells[key] ? [] :
+        fetch(CONFIG.pharmaciesUrl + key + ".json").then(r => { if (!r.ok) throw new Error(key); return r.json(); })
+          .then(rows => rows.map(([finess, nom, adresse, ville, lat, lon]) => ({ finess, nom, adresse, ville, lat, lon }))))
+        .catch(e => { delete this._cells[key]; throw e; });
+    }
+    return this._cells[key];
+  },
+  async getPharmaciesInBounds(b){
+    const keys = [];
+    for (let la = Math.floor(b.s); la <= Math.floor(b.n); la++) for (let lo = Math.floor(b.w); lo <= Math.floor(b.e); lo++) keys.push(la + "_" + lo);
+    if (keys.length > 6) return [];
+    const lists = await Promise.all(keys.map(k => this.cell(k)));
+    return lists.flat().filter(p => p.lat >= b.s && p.lat <= b.n && p.lon >= b.w && p.lon <= b.e);
+  },
+  getReportsMany: ids => (state.api ? SharedReports : LocalReports).getReportsMany(ids),
+  addReport: data => (state.api ? SharedReports : LocalReports).addReport(data),
+  vote: (id, kind) => (state.api ? SharedReports : LocalReports).vote(id, kind)
+};
+const src = () => state.demo ? DemoSource : RealSource;
+
+const DAY = 86400000;
+const _demoCache = {};
+function demoReportsFor(finess){
+  if (_demoCache[finess]) return _demoCache[finess];
+  const seed = parseInt(finess.replace(/\D/g,""),10) * 7919 + 13;
+  const rnd = mulberry32(seed);
+  const out = [];
+  const shopFactor = 0.86 + rnd()*0.3; // certaines officines un peu plus chères, d'autres moins
+  PILULES.filter(p => !p.remboursable).forEach(p => {
+    p.formats.forEach(fmt => {
+      if (rnd() > (fmt === 1 ? 0.5 : p.formats.length === 1 ? 0.6 : 0.45)) return;
+      const base = p.base[fmt];
+      const prix = Math.round(base*shopFactor*(0.92 + rnd()*0.18)*10)/10 - 0.01;
+      const r = rnd();
+      const ageDays = r < 0.55 ? Math.floor(rnd()*80) : r < 0.82 ? 95 + Math.floor(rnd()*80) : 190 + Math.floor(rnd()*200);
+      out.push({ id:`d-${finess}-${p.id}-${fmt}`, finess, pilule:p.id, format:fmt, prix:Math.max(1.99,prix), date:new Date(Date.now() - ageDays*DAY - Math.floor(rnd()*DAY)).toISOString(), confirmations:1 + Math.floor(rnd()*rnd()*7), source:"demo" });
+    });
+  });
+  return (_demoCache[finess] = out);
+}
+
+/* =====================================================================
+   STOCKAGE LOCAL (contributions de ce navigateur)
+   ===================================================================== */
+// reports / votes : utilisés seulement sans serveur. done : avis déjà donnés depuis ce navigateur.
+const Store = {
+  _mem: { reports:[], votes:{}, done:{} },
+  load(){
+    try {
+      const raw = localStorage.getItem(CONFIG.storageKey);
+      if (raw) {
+        const d = JSON.parse(raw);
+        this._mem.reports = Array.isArray(d.reports) ? d.reports : [];
+        this._mem.votes = d.votes || {}; this._mem.done = d.done || {};
+        Object.entries(d.confirms || {}).forEach(([id, date]) => { this._mem.votes[id] = { c:1, cd:date }; this._mem.done[id] = "confirm"; }); // ancien format
+      }
+    } catch(e) {}
+  },
+  save(){ try { localStorage.setItem(CONFIG.storageKey, JSON.stringify(this._mem)); } catch(e) {} },
+  localReports(){ return this._mem.reports; },
+  addReport(r){ this._mem.reports.push(r); this.save(); },
+  votes(id){ return this._mem.votes[id] || null; },
+  addVote(id, kind){
+    const v = this._mem.votes[id] ||= {}, now = new Date().toISOString();
+    if (kind === "confirm") { v.c = (v.c || 0) + 1; v.cd = now; } else { v.o = (v.o || 0) + 1; v.od = now; }
+    this.save();
+  },
+  markDone(id, kind){ this._mem.done[id] = kind; this.save(); },
+  doneFor(id){ return this._mem.done[id] || null; },
+  wipe(){ this._mem = { reports:[], votes:{}, done:{} }; try { localStorage.removeItem(CONFIG.storageKey); } catch(e) {} },
+  get(key, fallback){ try { const v = localStorage.getItem(CONFIG.storageKey + "." + key); return v === null ? fallback : JSON.parse(v); } catch(e) { return fallback; } },
+  set(key, value){ try { localStorage.setItem(CONFIG.storageKey + "." + key, JSON.stringify(value)); } catch(e) {} }
+};
+
+/* =====================================================================
+   AGRÉGATION : un prix affiché par (pilule, format) et par pharmacie
+   ===================================================================== */
+function aggregate(reports){
+  const groups = {};
+  reports.forEach(r => { (groups[r.pilule + "|" + r.format] ||= []).push(r); });
+  return Object.values(groups).map(list => {
+    const eff = list.map(r => ({ ...r, effDate: r.lastConfirmed && r.lastConfirmed > r.date ? r.lastConfirmed : r.date, effConf: r.confirmations || 1 }))
+      .sort((a,b) => b.date.localeCompare(a.date));
+    const current = eff[0];
+    const agree = eff.filter(r => Math.abs(r.prix - current.prix) <= CONFIG.concordanceEuros);
+    const date = agree.reduce((m,r) => r.effDate > m ? r.effDate : m, current.effDate);
+    const n = agree.reduce((s,r) => s + r.effConf, 0);
+    // « Ce prix n'est plus bon » : compte seulement les signalements postérieurs à la dernière confirmation
+    const outdated = current.outdated && current.lastOutdated && current.lastOutdated > current.effDate ? current.outdated : 0;
+    return { reportId: current.id, pilule: current.pilule, format: current.format, prix: current.prix, date, concordants: n, outdated, done: Store.doneFor(current.id) };
+  });
+}
+// Masqué par défaut : prix de plus de 6 mois, ou signalé au moins 2 fois comme dépassé
+function isHidden(o){ return freshness(o.date) === "old" || o.outdated >= 2; }
+function ageDays(iso){ return (Date.now() - new Date(iso).getTime())/DAY; }
+function freshness(iso){ const d = ageDays(iso); return d < CONFIG.freshDays ? "fresh" : d < CONFIG.staleDays ? "stale" : "old"; }
+
+const rtf = new Intl.RelativeTimeFormat("fr", { numeric:"auto" });
+function relDate(iso){
+  const d = Math.floor(ageDays(iso));
+  if (d < 1) { const h = Math.round((Date.now() - new Date(iso).getTime())/3600000); return h < 1 ? "à l'instant" : rtf.format(-h, "hour"); }
+  if (d < 14) return rtf.format(-d, "day");
+  if (d < 60) return rtf.format(-Math.round(d/7), "week");
+  if (d < 365) return rtf.format(-Math.round(d/30.4), "month");
+  return rtf.format(-Math.round(d/365), "year");
+}
+const eur = new Intl.NumberFormat("fr-FR", { style:"currency", currency:"EUR" });
+function km(a, b){ const R=6371, toR=x=>x*Math.PI/180; const dLa=toR(b[0]-a[0]), dLo=toR(b[1]-a[1]); const h=Math.sin(dLa/2)**2+Math.cos(toR(a[0]))*Math.cos(toR(b[0]))*Math.sin(dLo/2)**2; return 2*R*Math.asin(Math.sqrt(h)); }
+function fmtKm(d){ return d < 1 ? `${Math.round(d*1000/10)*10} m` : `${d.toFixed(1).replace(".",",")} km`; }
+function norm(s){ return s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase(); }
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+const fmtLabel = f => f === 1 ? "boîte 1 mois" : "boîte 3 mois";
+
+/* =====================================================================
+   ÉTAT
+   ===================================================================== */
+// Le mode démonstration (pharmacies et prix fictifs) n'est proposé qu'en local, pour les tests.
+const IS_LOCAL = location.protocol === "file:" || ["localhost", "127.0.0.1", "::1", ""].includes(location.hostname);
+const state = {
+  origin: null,          // [lat, lon] position ou lieu choisi
+  originIsUser: false,
+  pharmacies: [],
+  offers: {},            // finess -> offres agrégées
+  pill: null,            // pilule recherchée
+  format: Store.get("format", 1),
+  sort: Store.get("sort", "price"),
+  showOld: false,
+  view: "home",          // home | pharmacy | add | pill
+  selected: null,        // finess sélectionné
+  addPrefill: null,
+  demo: IS_LOCAL && Store.get("demo", false), // mode démonstration (version locale uniquement)
+  api: false,            // true quand le serveur des prix partagés répond
+  phCache: {},           // toutes les pharmacies déjà chargées, par n° FINESS
+  areaMsg: ""
+};
+
+/* =====================================================================
+   CARTE
+   ===================================================================== */
+let map = null, markerLayer = null, meMarker = null, markers = {};
+const $ = id => document.getElementById(id);
+
+function initMap(){
+  if (!window.L) { $("map").classList.add("no-tiles"); $("tileNotice").textContent = "La carte n'a pas pu se charger. Vérifiez votre connexion."; $("tileNotice").hidden = false; return; }
+  map = L.map("map", { zoomControl:false, attributionControl:true }).setView(CONFIG.defaultCenter, CONFIG.defaultZoom);
+  map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
+  L.control.zoom({ position:"bottomright", zoomInTitle:"Zoomer", zoomOutTitle:"Dézoomer" }).addTo(map);
+  const tiles = L.tileLayer(CONFIG.tilesUrl, { attribution:"© IGN", minZoom:6, maxZoom:19, tileSize:256 }).addTo(map);
+  let loaded = 0, errors = 0;
+  tiles.on("tileload", () => { loaded++; $("map").classList.remove("no-tiles"); $("tileNotice").hidden = true; });
+  tiles.on("tileerror", () => { errors++; if (!loaded && errors >= 3) { $("map").classList.add("no-tiles"); $("tileNotice").hidden = false; } });
+  markerLayer = L.layerGroup().addTo(map);
+  map.on("click", () => { if (state.view === "pharmacy" || state.view === "add") { state.selected = null; state.view = state.pill ? "pill" : "home"; drawMarkers(); render(); } });
+  let moveTimer;
+  map.on("moveend", () => { if (state.demo) return; clearTimeout(moveTimer); moveTimer = setTimeout(loadPharmacies, 180); });
+}
+
+function setOrigin(latlon, isUser, label){
+  state.origin = latlon; state.originIsUser = isUser;
+  if (map) {
+    map.setView(latlon, CONFIG.defaultZoom);
+    if (meMarker) meMarker.remove();
+    meMarker = L.marker(latlon, { icon:L.divIcon({ className:"pin-wrap", html:'<span class="me"></span>', iconSize:[0,0] }), keyboard:false, interactive:false, title: isUser ? "Votre position" : (label || "Lieu choisi") }).addTo(map);
+  }
+  loadPharmacies();
+}
+
+let apiReady = Promise.resolve();
+let areaSeq = 0;
+async function loadPharmacies(){
+  const my = ++areaSeq;
+  let list = [];
+  state.areaMsg = "";
+  if (state.demo) list = await DemoSource.getPharmaciesAround(state.origin || CONFIG.defaultCenter);
+  else if (map && map.getZoom() < CONFIG.minZoomReal) state.areaMsg = "Zoomez sur la carte pour afficher les pharmacies.";
+  else if (map) {
+    const b = map.getBounds().pad(0.15);
+    try {
+      list = await RealSource.getPharmaciesInBounds({ s:b.getSouth(), w:b.getWest(), n:b.getNorth(), e:b.getEast() });
+      const c = map.getCenter(), cc = [c.lat, c.lng];
+      list = list.map(p => [p, km(cc, [p.lat, p.lon])]).sort((a, b) => a[1] - b[1]).slice(0, CONFIG.maxMarkers).map(x => x[0]);
+      if (!list.length) state.areaMsg = "Aucune pharmacie connue dans cette zone.";
+    } catch(e) {
+      if (my !== areaSeq) return;
+      state.demo = true; toast("Liste des pharmacies indisponible ici : affichage du mode démonstration.");
+      syncDemoUi(); return loadPharmacies();
+    }
+  }
+  if (my !== areaSeq) return;
+  state.pharmacies = list;
+  list.forEach(p => { state.phCache[p.finess] = p; });
+  $("areaNotice").textContent = state.areaMsg; $("areaNotice").hidden = !state.areaMsg;
+  await refreshOffers();
+}
+// force = re-dessiner aussi le panneau quand une fiche ou le formulaire est ouvert
+async function refreshOffers(force){
+  const ids = new Set(state.pharmacies.map(p => p.finess)); if (state.selected) ids.add(state.selected);
+  await apiReady;
+  const list = [...ids];
+  let byPharmacy = {};
+  try { byPharmacy = await src().getReportsMany(list); }
+  catch(e) { if (!refreshOffers.warned) { refreshOffers.warned = true; toast("Les prix partagés n'ont pas pu être chargés. Réessayez dans un instant."); } }
+  state.offers = Object.fromEntries(list.map(id => [id, aggregate(byPharmacy[id] || [])]));
+  drawMarkers();
+  if (force || state.view === "home" || state.view === "pill") render();
+}
+const findPharmacy = id => state.phCache[id] || state.pharmacies.find(p => p.finess === id);
+function setDemo(on){
+  state.demo = on; Store.set("demo", on);
+  state.selected = null; state.view = state.pill ? "pill" : "home"; state.phCache = {};
+  syncDemoUi(); loadPharmacies().then(() => render());
+}
+function syncDemoUi(){ const t = $("demoToggle"); if (t) t.checked = state.demo; }
+
+function offerFor(finess, pillId, format){ return (state.offers[finess] || []).find(o => o.pilule === pillId && o.format === format) || null; }
+function visible(o){ return o && (state.showOld || !isHidden(o)); }
+
+function drawMarkers(){
+  if (!map) return;
+  markerLayer.clearLayers(); markers = {};
+  const priceMode = state.pill && !state.pill.remboursable;
+  state.pharmacies.forEach(p => {
+    let html, title = p.nom;
+    const sel = state.selected === p.finess ? " sel" : "";
+    if (priceMode) {
+      const o = offerFor(p.finess, state.pill.id, state.format);
+      if (visible(o)) { html = `<span class="tag tab${looksStale(o) ? " stale" : ""}${sel}">${eur.format(o.prix)}</span>`; title += ` : ${eur.format(o.prix)}`; }
+      else html = `<span class="pin small${sel}"></span>`;
+    } else html = `<span class="pin${sel}"></span>`;
+    const m = L.marker([p.lat, p.lon], { icon:L.divIcon({ className:"pin-wrap", html, iconSize:[0,0] }), title, alt:title, riseOnHover:true, zIndexOffset: sel ? 1000 : 0 });
+    m.on("click", () => openPharmacy(p.finess));
+    m.on("keypress", e => { if (e.originalEvent.key === "Enter") openPharmacy(p.finess); });
+    m.addTo(markerLayer); markers[p.finess] = m;
+  });
+}
+
+/* =====================================================================
+   GÉOLOCALISATION ET RECHERCHE DE LIEU
+   La position reste dans le navigateur : elle ne sert qu'à centrer la carte.
+   ===================================================================== */
+function askPosition(){
+  const status = $("locStatus");
+  if (!("geolocation" in navigator)) return showLocField("La géolocalisation n'est pas disponible. Indiquez une ville ou une adresse.");
+  status.hidden = false; status.textContent = "Recherche de votre position…";
+  let done = false;
+  const fail = () => { if (done) return; done = true; showLocField("Position non disponible. Indiquez une ville ou une adresse."); };
+  setTimeout(fail, 10000);
+  try {
+    navigator.geolocation.getCurrentPosition(pos => {
+      if (done) return; done = true;
+      status.hidden = true; $("locField").hidden = true;
+      setOrigin([pos.coords.latitude, pos.coords.longitude], true);
+    }, fail, { enableHighAccuracy:false, timeout:9000, maximumAge:300000 });
+  } catch(e) { fail(); }
+}
+function showLocField(msg, closable){
+  $("locStatus").textContent = msg; $("locStatus").hidden = !msg;
+  $("locField").hidden = false; $("locClose").hidden = !closable;
+  measure();
+}
+function hideLocField(){ $("locField").hidden = true; $("locStatus").hidden = true; $("locInput").value = ""; measure(); }
+
+// Repli hors ligne si le géocodage n'est pas joignable (aperçu, réseau coupé)
+const OFFLINE_CITIES = [["Paris",48.8566,2.3522],["Marseille",43.2965,5.3698],["Lyon",45.764,4.8357],["Toulouse",43.6047,1.4442],["Nice",43.7102,7.262],["Nantes",47.2184,-1.5536],["Montpellier",43.6108,3.8767],["Strasbourg",48.5734,7.7521],["Bordeaux",44.8378,-0.5792],["Lille",50.6292,3.0573],["Rennes",48.1173,-1.6778],["Reims",49.2583,4.0317],["Toulon",43.1242,5.928],["Saint-Étienne",45.4397,4.3872],["Le Havre",49.4944,0.1079],["Grenoble",45.1885,5.7245],["Dijon",47.322,5.0415],["Angers",47.4784,-0.5632],["Nîmes",43.8367,4.3601],["Clermont-Ferrand",45.7772,3.087],["Brest",48.3904,-4.4861],["Tours",47.3941,0.6848],["Limoges",45.8336,1.2611],["Amiens",49.8941,2.2958],["Perpignan",42.6887,2.8948],["Metz",49.1193,6.1757],["Besançon",47.2378,6.0241],["Orléans",47.9029,1.9093],["Rouen",49.4432,1.0999],["Caen",49.1829,-0.3707],["Ajaccio",41.9192,8.7386],["Pau",43.2951,-0.3708],["La Rochelle",46.1603,-1.1511],["Poitiers",46.5802,0.3404]];
+let geocodeOffline = false;
+async function geocode(q){
+  if (q.trim().length < 3) return [];
+  if (!geocodeOffline) {
+    try {
+      const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 5000);
+      const res = await fetch(`${CONFIG.geocodeUrl}?q=${encodeURIComponent(q)}&limit=5&autocomplete=1`, { signal:ctrl.signal });
+      clearTimeout(t);
+      if (!res.ok) throw new Error("http " + res.status);
+      const data = await res.json();
+      return (data.features || []).map(f => ({ id:f.properties.id || f.properties.label, label:f.properties.label, sub:f.properties.context || "", latlon:[f.geometry.coordinates[1], f.geometry.coordinates[0]] }));
+    } catch(e) { geocodeOffline = true; }
+  }
+  const n = norm(q);
+  return OFFLINE_CITIES.filter(c => norm(c[0]).startsWith(n) || norm(c[0]).includes(n)).slice(0,5).map(c => ({ id:c[0], label:c[0], sub:"liste hors ligne", latlon:[c[1], c[2]] }));
+}
+
+/* =====================================================================
+   COMBOBOX ACCESSIBLE (pilules, lieux)
+   ===================================================================== */
+function combobox({ input, list, source, onSelect, emptyText, debounce = 0 }){
+  let items = [], active = -1, timer = null, seq = 0;
+  const close = () => { list.hidden = true; input.setAttribute("aria-expanded","false"); input.removeAttribute("aria-activedescendant"); active = -1; };
+  const paint = () => {
+    list.innerHTML = items.length ? items.map((it,i) => `<li role="option" id="${list.id}-o${i}" data-i="${i}" aria-selected="${i===active}"><span class="opt-main">${esc(it.label)}</span>${it.sub ? `<span class="opt-sub">${esc(it.sub)}</span>` : ""}</li>`).join("")
+      : `<li class="empty" role="option" aria-disabled="true">${esc(emptyText)}</li>`;
+    list.hidden = false; input.setAttribute("aria-expanded","true");
+    if (active >= 0) { input.setAttribute("aria-activedescendant", `${list.id}-o${active}`); list.children[active]?.scrollIntoView({ block:"nearest" }); }
+  };
+  const update = async () => {
+    const my = ++seq; const q = input.value;
+    const res = await source(q);
+    if (my !== seq) return;
+    items = res; active = items.length ? 0 : -1;
+    if (!q.trim() && !items.length) return close();
+    paint();
+  };
+  input.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(update, debounce); });
+  input.addEventListener("focus", () => { if (input.value.trim() || source.showOnFocus) update(); });
+  input.addEventListener("keydown", e => {
+    if (list.hidden && (e.key === "ArrowDown")) { update(); return; }
+    if (e.key === "ArrowDown") { e.preventDefault(); if (items.length) { active = (active+1) % items.length; paint(); } }
+    else if (e.key === "ArrowUp") { e.preventDefault(); if (items.length) { active = (active-1+items.length) % items.length; paint(); } }
+    else if (e.key === "Enter") { if (!list.hidden && items[active]) { e.preventDefault(); const it = items[active]; close(); onSelect(it); } }
+    else if (e.key === "Escape") close();
+  });
+  list.addEventListener("mousedown", e => e.preventDefault());
+  list.addEventListener("click", e => { const li = e.target.closest("li[data-i]"); if (li) { const it = items[+li.dataset.i]; close(); onSelect(it); } });
+  input.addEventListener("blur", () => setTimeout(close, 120));
+  return { close };
+}
+
+function pillSource(onlyFree){
+  const fn = q => {
+    const n = norm(q.trim());
+    return PILULES.filter(p => (!onlyFree || !p.remboursable) && (!n || norm(p.nom).includes(n) || norm(p.mol).includes(n) || norm(p.gen).includes(n)))
+      .sort((a,b) => (norm(a.nom).startsWith(n) ? 0 : 1) - (norm(b.nom).startsWith(n) ? 0 : 1) || a.nom.localeCompare(b.nom, "fr"))
+      .slice(0, 12)
+      .map(p => ({ id:p.id, label:p.nom, sub:`${p.gen} · ${p.remboursable ? "prix fixé" : "prix libre"}`, pill:p }));
+  };
+  fn.showOnFocus = true;
+  return fn;
+}
+
+/* =====================================================================
+   RENDU DU PANNEAU
+   ===================================================================== */
+const sheet = $("sheet"), body = $("sheetBody");
+const isDesktop = () => matchMedia("(min-width:900px)").matches;
+function setSheet(s){ sheet.dataset.state = s; $("sheetHandle").setAttribute("aria-expanded", String(s === "open")); $("sheetHandle").setAttribute("aria-label", s === "open" ? "Réduire le panneau" : "Agrandir le panneau"); }
+
+function render(){
+  const v = state.view;
+  if (v === "pharmacy") body.innerHTML = viewPharmacy();
+  else if (v === "add") body.innerHTML = viewAdd();
+  else if (v === "pill") body.innerHTML = viewPill();
+  else body.innerHTML = viewHome();
+  bindView();
+}
+
+function demoBadge(){ return `<span class="demo-tag"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/></svg>Données de démonstration</span>`; }
+
+function viewHome(){
+  const n = state.pharmacies.length;
+  const priced = state.pharmacies.filter(p => (state.offers[p.finess] || []).some(visible)).length;
+  const countLine = state.areaMsg ? esc(state.areaMsg)
+    : `${n} pharmacies sur la carte${state.demo ? "" : priced ? `, dont ${priced} avec des prix partagés` : ", aucun prix partagé ici pour l'instant"}. Touchez-en une ou cherchez votre pilule.`;
+  return `
+    <div class="hint">
+      <span class="leaf" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14zm0 0l7-7" stroke="currentColor" stroke-width="1.5" fill-opacity=".85"/></svg></span>
+      <div><h2 style="font-size:21px">Comparez le prix de votre pilule</h2>
+      <p style="color:var(--muted);font-size:14.5px">${countLine}</p></div>
+    </div>
+    <ol class="steps">
+      <li><span class="n">1</span><span>Indiquez votre pilule dans la barre de recherche.</span></li>
+      <li><span class="n">2</span><span>Les prix signalés s'affichent sur la carte et dans une liste à trier.</span></li>
+      <li><span class="n">3</span><span>Après votre passage en pharmacie, partagez le prix payé. C'est anonyme.</span></li>
+    </ol>
+    <div class="note">
+      <p><strong>Pourquoi les prix varient ?</strong> Les pilules non remboursées (toutes celles de 3e et 4e génération, et quelques autres) ont un prix libre : chaque pharmacie fixe le sien. Ce sont les seules comparées ici. Les pilules remboursables ont le même prix partout et sont gratuites avant 26 ans.</p>
+      <p><a href="#comprendre">Bien comprendre les prix et vos droits</a></p>
+    </div>
+    ${state.demo ? `
+      <div class="note rose">
+        <p>${demoBadge()}</p>
+        <p>Vous voyez des pharmacies et des prix fictifs, placés autour de vous pour l'exemple.</p>
+        <p><button class="btn small" data-demo="off">Revenir aux vraies pharmacies</button></p>
+      </div>` : `
+      <div class="note rose">
+        <p><strong>Les pharmacies sont réelles</strong> (répertoire officiel FINESS). Seuls les prix partagés par les utilisatrices s'affichent : aucun prix n'est inventé.</p>
+        <p>${state.api ? "Les prix partagés sont visibles par toutes les utilisatrices." : "<strong>Aperçu :</strong> le serveur des prix partagés n'est pas joignable ici, les prix que vous ajoutez restent dans ce navigateur."}</p>
+        ${IS_LOCAL ? `<p><button class="linkbtn" data-demo="on">Test : voir un exemple avec des prix fictifs</button></p>` : ""}
+      </div>`}`;
+}
+
+// Petit bouton « + prix » sur chaque ligne, pour ajouter un prix sans remonter en haut de la fiche
+function addPillBtn(pillId, fmt){
+  return `<button class="confirm addmini" data-add-pill="${esc(pillId)}" data-add-fmt="${fmt}" aria-label="Ajouter un prix pour ${esc(PILL_BY_ID[pillId].nom)}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Ajouter un prix</button>`;
+}
+function freshChipFor(o){
+  const f = freshness(o.date);
+  if (o.outdated) return `<span class="chip warn">signalé comme dépassé${o.outdated > 1 ? ` (${o.outdated})` : ""}</span>`;
+  return f === "stale" ? `<span class="chip warn">à confirmer</span>` : f === "old" ? `<span class="chip warn">ancien prix</span>` : "";
+}
+const looksStale = o => o.outdated > 0 || freshness(o.date) !== "fresh";
+function offerRow(o, withPillName){
+  const p = PILL_BY_ID[o.pilule], f = o.outdated ? "stale" : freshness(o.date);
+  const conf = o.concordants > 1 ? `${o.concordants} signalements concordants` : "1 signalement";
+  const check = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5 9-10"/></svg>`;
+  const votes = o.done
+    ? `<button class="confirm" disabled>${check}${o.done === "confirm" ? "Merci, prix confirmé" : "Merci, signalement noté"}</button>`
+    : `<button class="confirm" data-vote="confirm" data-id="${esc(o.reportId)}">${check}Ce prix est toujours bon</button>
+       <button class="confirm" data-vote="outdated" data-id="${esc(o.reportId)}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Ce prix n'est plus bon</button>`;
+  return `<li class="offer ${f}">
+    <div class="name">${withPillName ? esc(p.nom) : ""} <span class="gen">· ${fmtLabel(o.format)}</span></div>
+    <div class="price tab">${eur.format(o.prix)}</div>
+    <div class="meta"><span>${relDate(o.date)}</span><span>${conf}</span>${freshChipFor(o)}</div>
+    <div class="actions">${addPillBtn(o.pilule, o.format)}${votes}</div>
+  </li>`;
+}
+
+function viewPharmacy(){
+  const p = findPharmacy(state.selected);
+  if (!p) return viewHome();
+  const all = (state.offers[p.finess] || []).slice().sort((a,b) => PILL_BY_ID[a.pilule].nom.localeCompare(PILL_BY_ID[b.pilule].nom, "fr") || a.format - b.format);
+  const oldCount = all.filter(isHidden).length;
+  const shown = all.filter(visible);
+  const dist = state.origin ? fmtKm(km(state.origin, [p.lat, p.lon])) : "";
+  return `
+    <button class="backbtn" data-back><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>${state.pill ? "Résultats" : "Retour"}</button>
+    <div class="phead">
+      <h2>${esc(p.nom)}</h2>
+      <p class="addr">${esc(p.adresse)}${p.adresse ? " · " : ""}${esc(p.ville)}${dist ? ` · à ${dist}` : ""}</p>
+      <p style="margin:10px 0 0">${p.demo ? demoBadge() : `<span class="chip">N° FINESS ${esc(p.finess)}</span>`}</p>
+    </div>
+    <button class="btn block" data-add><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Ajouter un prix</button>
+    <div>
+      <div class="spread"><h3>Prix signalés</h3><span style="font-size:13.5px;color:var(--muted)">pilules à prix libre</span></div>
+      ${shown.length ? `<ul class="offers">${shown.map(o => offerRow(o, true)).join("")}</ul>`
+        : `<p class="empty-note">Aucun prix partagé pour cette pharmacie pour l'instant. Vous y avez acheté votre pilule ? Partagez le prix payé, cela aidera les suivantes.</p>`}
+    </div>
+    ${oldCount ? `<label class="toggle"><input type="checkbox" id="oldToggle" ${state.showOld ? "checked" : ""}>Afficher les anciens prix (${oldCount}, plus de 6 mois)</label>` : ""}
+    <p style="margin:0;font-size:13px;color:var(--muted)">Prix indicatifs, à vérifier en pharmacie. Les pilules remboursables ont le même prix partout et ne sont pas listées ici.</p>`;
+}
+
+function viewPill(){
+  const p = state.pill;
+  const head = `
+    <div class="spread">
+      <div><p class="eyebrow">${esc(p.gen)}</p><h2>${esc(p.nom)}</h2><p class="addr" style="font-size:14px">${esc(p.mol)}</p></div>
+    </div>`;
+  if (p.remboursable) {
+    const prix = p.formats.map(f => `<span class="fixed"><span>${fmtLabel(f)}</span><strong class="tab">${eur.format(p.prixFixe[f])}</strong></span>`).join("");
+    return head + `
+      <div class="note rose">
+        <p><strong>Cette pilule a le même prix dans toutes les pharmacies.</strong> Son prix est fixé par l'État : inutile de comparer.</p>
+        <div class="fixedrow">${prix}</div>
+        <p style="font-size:13px">Prix public officiel, honoraire de dispensation compris.</p>
+      </div>
+      <div class="note">
+        <p><strong>Moins de 26 ans :</strong> gratuite sur ordonnance, sans avance de frais.</p>
+        <p><strong>À partir de 26 ans :</strong> remboursée à 65 % par l'Assurance Maladie sur ordonnance. Votre complémentaire santé peut rembourser le reste, selon votre contrat.</p>
+      </div>
+      <p style="margin:0"><a href="#comprendre">Bien comprendre la gratuité et le remboursement</a></p>
+      <p style="margin:0;font-size:13px;color:var(--muted)">Source des prix : <a href="https://base-donnees-publique.medicaments.gouv.fr/" target="_blank" rel="noopener">base de données publique des médicaments</a>, consultée le 30 octobre 2026.</p>`;
+  }
+  const rows = state.pharmacies.map(ph => ({ ph, o: offerFor(ph.finess, p.id, state.format), d: state.origin ? km(state.origin, [ph.lat, ph.lon]) : 0 }))
+    .filter(r => visible(r.o));
+  const cmp = { price:(a,b) => a.o.prix - b.o.prix, distance:(a,b) => a.d - b.d, fresh:(a,b) => b.o.date.localeCompare(a.o.date) }[state.sort];
+  rows.sort(cmp);
+  const oldCount = state.pharmacies.filter(ph => { const o = offerFor(ph.finess, p.id, state.format); return o && isHidden(o); }).length;
+  const prices = rows.map(r => r.o.prix);
+  const range = prices.length > 1 ? `De ${eur.format(Math.min(...prices))} à ${eur.format(Math.max(...prices))} selon la pharmacie.` : "";
+  return head + `
+    <p class="note" style="margin:0">Prix libre : chaque pharmacie fixe son prix. Cette pilule n'est pas remboursée, y compris avant 26 ans. ${range}</p>
+    <div class="row" style="justify-content:space-between">
+      ${p.formats.length > 1 ? `<div class="seg" role="group" aria-label="Format de boîte">
+        <button data-format="1" aria-pressed="${state.format===1}">1 mois</button><button data-format="3" aria-pressed="${state.format===3}">3 mois</button>
+      </div>` : `<span class="chip">Vendue en ${fmtLabel(p.formats[0])} uniquement</span>`}
+      <div class="seg" role="group" aria-label="Trier par">
+        <button data-sort="price" aria-pressed="${state.sort==="price"}">Prix</button><button data-sort="distance" aria-pressed="${state.sort==="distance"}">Distance</button><button data-sort="fresh" aria-pressed="${state.sort==="fresh"}">Récent</button>
+      </div>
+    </div>
+    ${rows.length ? `<ul class="results">${rows.map(({ph,o,d}) => {
+      const f = looksStale(o) ? "stale" : "fresh";
+      return `<li><button class="result ${f}" data-open="${ph.finess}">
+        <span class="pname">${esc(ph.nom)}</span><span class="price tab">${eur.format(o.prix)}</span>
+        <span class="sub"><span>${fmtKm(d)}</span><span>${relDate(o.date)}</span>${freshChipFor(o)}<span>${o.concordants > 1 ? o.concordants + " signalements" : "1 signalement"}</span></span>
+      </button></li>`; }).join("")}</ul>`
+      : `<p style="color:var(--muted)">Aucun prix récent signalé pour ${esc(p.nom)} en ${fmtLabel(state.format)} dans ce secteur. ${p.formats.length > 1 ? "Essayez l'autre format, ou partagez" : "Partagez"} un prix depuis la fiche d'une pharmacie.${state.demo || !IS_LOCAL ? "" : ` <button class="linkbtn" data-demo="on">Test : voir un exemple avec des prix fictifs</button>`}</p>`}
+    ${oldCount ? `<label class="toggle"><input type="checkbox" id="oldToggle" ${state.showOld ? "checked" : ""}>Afficher les anciens prix (${oldCount}, plus de 6 mois)</label>` : ""}
+    <p style="margin:0;font-size:13px;color:var(--muted)">Le tri est le vôtre : aucune pharmacie n'est mise en avant. Prix indicatifs, à vérifier en pharmacie.</p>`;
+}
+
+function viewAdd(){
+  const p = findPharmacy(state.selected);
+  const pre = state.addPrefill ? PILL_BY_ID[state.addPrefill] : null;
+  return `
+    <button class="backbtn" data-back-pharmacy><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>Annuler</button>
+    <div><p class="eyebrow">Ajouter un prix</p><h2>${esc(p.nom)}</h2></div>
+    <form class="form" id="addForm" novalidate>
+      <div>
+        <label class="lab" for="addPill">Pilule</label>
+        <div class="field">
+          <input id="addPill" type="text" placeholder="Tapez le nom de la pilule" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="addPillList" value="${pre ? esc(pre.nom) : ""}" data-id="${pre ? pre.id : ""}">
+          <ul class="listbox" id="addPillList" role="listbox" hidden></ul>
+        </div>
+        <p class="help">Seules les pilules à prix libre sont proposées : les autres ont le même prix partout.</p>
+        <p class="err" id="errPill" hidden>Choisissez une pilule dans la liste.</p>
+      </div>
+      <fieldset>
+        <legend>Format de la boîte</legend>
+        <div class="radios">
+          <label><input type="radio" name="fmt" value="1" ${state.format===1?"checked":""}>1 mois</label>
+          <label><input type="radio" name="fmt" value="3" ${state.format===3?"checked":""}>3 mois</label>
+        </div>
+      </fieldset>
+      <div>
+        <label class="lab" for="addPrice">Prix payé</label>
+        <div class="field" style="padding-right:4px">
+          <input id="addPrice" type="text" inputmode="decimal" placeholder="Ex. 12,90" autocomplete="off">
+          <span class="euro" aria-hidden="true">€</span>
+        </div>
+        <p class="help">Le prix de la boîte, sans remboursement de la mutuelle.</p>
+        <p class="err" id="errPrice" hidden>Indiquez un prix entre 1 € et 150 €, par exemple 12,90.</p>
+      </div>
+      <button class="btn block" type="submit">Partager ce prix</button>
+      <p style="margin:0;font-size:13px;color:var(--muted)">Contribution anonyme : aucun compte, aucune donnée personnelle. ${state.api && !state.demo ? "Votre prix sera visible par toutes les utilisatrices." : "Dans cet aperçu, le prix est gardé dans votre navigateur."}</p>
+    </form>`;
+}
+
+/* Modération côté navigateur (le serveur refait les mêmes contrôles) */
+const PRICE_BOUNDS = { 1:[1, 40], 3:[3, 100] };
+function checkPrice(pillId, fmt, prix){
+  const [min, max] = PRICE_BOUNDS[fmt];
+  if (!isFinite(prix) || prix < min || prix > max) return `Indiquez un prix entre ${min} € et ${max} € pour une boîte de ${fmt} mois, par exemple ${fmt === 1 ? "12,90" : "34,50"}.`;
+  const same = Object.values(state.offers).flat().filter(o => o.pilule === pillId && o.format === fmt).map(o => o.prix).sort((a, b) => a - b);
+  if (same.length >= 3) {
+    const m = same.length % 2 ? same[same.length >> 1] : (same[same.length/2 - 1] + same[same.length/2]) / 2;
+    if (prix < m * 0.4 || prix > m * 2.5) return "Ce prix est très différent des autres prix partagés pour cette pilule. Vérifiez le montant et le format de boîte.";
+  }
+  return null;
+}
+
+function bindView(){
+  body.querySelectorAll("[data-vote]").forEach(b => b.addEventListener("click", async () => {
+    const kind = b.dataset.vote, id = b.dataset.id;
+    b.disabled = true;
+    try {
+      await src().vote(id, kind);
+      Store.markDone(id, kind);
+      toast(kind === "confirm" ? "Merci ! Le prix est confirmé." : "Merci ! Le prix est signalé comme dépassé. Si vous connaissez le bon prix, ajoutez-le.");
+    } catch(e) {
+      if (/déjà/.test(e.message)) Store.markDone(id, kind);
+      toast(e.message);
+    }
+    await refreshOffers(true);
+  }));
+  body.querySelector("[data-back]")?.addEventListener("click", () => { state.selected = null; state.view = state.pill ? "pill" : "home"; drawMarkers(); render(); });
+  body.querySelector("[data-add]")?.addEventListener("click", () => { state.view = "add"; state.addPrefill = state.pill && !state.pill.remboursable ? state.pill.id : null; render(); setSheet("open"); body.querySelector("#addPill")?.focus(); });
+  body.querySelector("[data-back-pharmacy]")?.addEventListener("click", () => { state.view = "pharmacy"; render(); });
+  body.querySelectorAll("[data-add-pill]").forEach(b => b.addEventListener("click", () => {
+    state.addPrefill = b.dataset.addPill; state.format = +b.dataset.addFmt; state.view = "add";
+    render(); setSheet("open"); body.scrollTop = 0; body.querySelector("#addPrice")?.focus();
+  }));
+  body.querySelectorAll("[data-demo]").forEach(b => b.addEventListener("click", () => setDemo(b.dataset.demo === "on")));
+  body.querySelector("#oldToggle")?.addEventListener("change", e => { state.showOld = e.target.checked; drawMarkers(); render(); });
+  body.querySelectorAll("[data-format]").forEach(b => b.addEventListener("click", () => { state.format = +b.dataset.format; Store.set("format", state.format); drawMarkers(); render(); }));
+  body.querySelectorAll("[data-sort]").forEach(b => b.addEventListener("click", () => { state.sort = b.dataset.sort; Store.set("sort", state.sort); render(); }));
+  body.querySelectorAll("[data-open]").forEach(b => b.addEventListener("click", () => openPharmacy(b.dataset.open, true)));
+  const form = body.querySelector("#addForm");
+  if (form) {
+    const pillIn = form.querySelector("#addPill");
+    // Ne propose que les formats de boîte réellement vendus pour la pilule choisie
+    const syncFormats = id => {
+      const fm = id ? PILL_BY_ID[id].formats : [1,3];
+      const radios = [...form.querySelectorAll('input[name="fmt"]')];
+      radios.forEach(r => { r.disabled = !fm.includes(+r.value); r.parentElement.classList.toggle("off", r.disabled); });
+      if (!radios.some(r => r.checked && !r.disabled)) radios.find(r => !r.disabled).checked = true;
+    };
+    syncFormats(pillIn.dataset.id);
+    combobox({ input:pillIn, list:form.querySelector("#addPillList"), source:pillSource(true), emptyText:"Aucune pilule à prix libre ne correspond.", onSelect: it => { pillIn.value = it.label; pillIn.dataset.id = it.id; $("errPill").hidden = true; syncFormats(it.id); } });
+    pillIn.addEventListener("input", () => { pillIn.dataset.id = ""; syncFormats(""); });
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      let id = pillIn.dataset.id;
+      if (!id) { const m = PILULES.find(p => !p.remboursable && norm(p.nom) === norm(pillIn.value.trim())); if (m) id = m.id; }
+      const prix = parseFloat(form.querySelector("#addPrice").value.replace(",", ".").replace(/[^\d.]/g, ""));
+      const fmt = +form.querySelector('input[name="fmt"]:checked').value;
+      const okPill = !!id;
+      $("errPill").hidden = okPill;
+      if (!okPill) return pillIn.focus();
+      const priceErr = checkPrice(id, fmt, prix);
+      const errEl = $("errPrice");
+      errEl.textContent = priceErr || ""; errEl.hidden = !priceErr;
+      if (priceErr) return form.querySelector("#addPrice").focus();
+      const submit = form.querySelector('button[type="submit"]'); submit.disabled = true;
+      try {
+        await src().addReport({ finess:state.selected, pilule:id, format:fmt, prix:Math.round(prix*100)/100 });
+      } catch(err) {
+        submit.disabled = false; errEl.textContent = err.message; errEl.hidden = false; return;
+      }
+      toast(state.api && !state.demo ? "Merci ! Votre prix est visible par toutes les utilisatrices." : "Merci ! Votre prix a été ajouté.");
+      state.view = "pharmacy"; await refreshOffers(true);
+    });
+  }
+}
+
+function openPharmacy(finess, pan){
+  state.selected = finess; state.view = "pharmacy";
+  drawMarkers(); render(); setSheet("open"); body.scrollTop = 0;
+  const p = findPharmacy(finess);
+  if (map && p && (pan || !map.getBounds().pad(-0.15).contains([p.lat, p.lon]))) map.panTo([p.lat, p.lon]);
+}
+
+function choosePill(p){
+  state.pill = p; state.selected = null; state.view = "pill";
+  $("pillInput").value = p.nom; $("pillClear").hidden = false;
+  // Format : uniquement ceux réellement vendus ; sinon celui qui a des prix
+  if (!p.formats.includes(state.format)) state.format = p.formats[0];
+  if (!p.remboursable && p.formats.length > 1) {
+    const count = f => state.pharmacies.filter(ph => visible(offerFor(ph.finess, p.id, f))).length;
+    const other = state.format === 1 ? 3 : 1;
+    if (count(state.format) === 0 && count(other) > 0) state.format = other;
+  }
+  drawMarkers(); render(); setSheet("open"); body.scrollTop = 0;
+}
+function clearPill(){
+  state.pill = null; state.view = state.selected ? "pharmacy" : "home";
+  $("pillInput").value = ""; $("pillClear").hidden = true;
+  drawMarkers(); render();
+}
+
+/* =====================================================================
+   PETITS UTILITAIRES D'INTERFACE
+   ===================================================================== */
+function selectText(el){ try { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } catch(e) {} }
+let toastTimer;
+function toast(msg){ const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 3200); }
+
+function measure(){
+  const root = document.documentElement;
+  root.style.setProperty("--footer-h", $("footer").offsetHeight + "px");
+  const tb = $("topbar"); root.style.setProperty("--sheet-top", (tb.offsetTop + tb.offsetHeight + 12) + "px");
+}
+
+// Menu
+function openMenu(){ $("drawer").hidden = false; $("scrim").hidden = false; $("menuBtn").setAttribute("aria-expanded","true"); $("drawer").querySelector("nav a").focus(); }
+function closeMenu(){ $("drawer").hidden = true; $("scrim").hidden = true; $("menuBtn").setAttribute("aria-expanded","false"); }
+
+// Pages (routage par ancre)
+const PAGES = ["comprendre","confidentialite","signaler"];
+function route(){
+  const h = location.hash.replace("#","");
+  const page = PAGES.includes(h) ? h : (h.startsWith("s-") ? "comprendre" : "");
+  PAGES.forEach(p => { $("page-" + p).hidden = p !== page; });
+  document.querySelectorAll(".drawer nav a").forEach(a => { if (a.dataset.route === page) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+  closeMenu();
+  if (page) {
+    const el = $("page-" + page);
+    if (h.startsWith("s-")) { document.getElementById(h)?.scrollIntoView(); } else el.scrollTop = 0;
+  } else if (map) setTimeout(() => map.invalidateSize(), 50);
+}
+
+/* =====================================================================
+   DÉMARRAGE
+   ===================================================================== */
+function boot(){
+  Store.load();
+  initMap();
+  measure();
+  addEventListener("resize", measure);
+  if (window.ResizeObserver) new ResizeObserver(measure).observe($("topbar"));
+
+  combobox({ input:$("pillInput"), list:$("pillList"), source:pillSource(false), emptyText:"Aucune pilule ne correspond. Vérifiez l'orthographe.", onSelect: it => { choosePill(it.pill); $("pillInput").blur(); } });
+  $("pillInput").addEventListener("input", () => { if (!$("pillInput").value) $("pillClear").hidden = true; else $("pillClear").hidden = false; });
+  $("pillClear").addEventListener("click", () => { clearPill(); $("pillInput").focus(); });
+
+  const locSrc = q => geocode(q);
+  combobox({ input:$("locInput"), list:$("locList"), source:locSrc, debounce:250, emptyText:"Aucun lieu trouvé. Essayez une ville ou un code postal.", onSelect: it => { hideLocField(); setOrigin(it.latlon, false, it.label); toast(`Carte centrée sur ${it.label}`); } });
+  $("locClose").addEventListener("click", hideLocField);
+  $("placeBtn").addEventListener("click", () => { showLocField("", true); $("locInput").focus(); });
+
+  $("sheetHandle").addEventListener("click", () => setSheet(sheet.dataset.state === "open" ? "peek" : "open"));
+  $("menuBtn").addEventListener("click", openMenu);
+  $("menuClose").addEventListener("click", closeMenu);
+  $("scrim").addEventListener("click", closeMenu);
+  addEventListener("keydown", e => { if (e.key === "Escape" && !$("drawer").hidden) closeMenu(); });
+  addEventListener("hashchange", route);
+  $("wipeBtn").addEventListener("click", async () => { Store.wipe(); $("wipeMsg").textContent = "Vos contributions ont été effacées."; await refreshOffers(true); });
+
+  // Thème : Clair / Sombre / Auto (suit le réglage du système)
+  const applyTheme = t => {
+    if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    else document.documentElement.removeAttribute("data-theme");
+    document.querySelectorAll("[data-theme-set]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.themeSet === t)));
+  };
+  applyTheme(Store.get("theme", "auto"));
+  document.querySelectorAll("[data-theme-set]").forEach(b => b.addEventListener("click", () => { Store.set("theme", b.dataset.themeSet); applyTheme(b.dataset.themeSet); }));
+
+  syncDemoUi();
+  $("demoRow").hidden = !IS_LOCAL;
+  $("demoToggle").addEventListener("change", e => { setDemo(e.target.checked); closeMenu(); });
+
+  $("copyMail").addEventListener("click", () => {
+    const done = ok => { $("copyMsg").textContent = ok ? "Adresse copiée." : "Sélectionnez l'adresse pour la copier."; };
+    try { navigator.clipboard.writeText(CONFIG.contact).then(() => done(true), () => { selectText($("contactMail")); done(false); }); }
+    catch(e) { selectText($("contactMail")); done(false); }
+  });
+
+  apiReady = (async () => {
+    if (await SupabaseReports.check()) { SharedReports = SupabaseReports; return true; }
+    if (await ApiReports.check()) { SharedReports = ApiReports; return true; }
+    return false;
+  })().then(ok => {
+    state.api = ok;
+    $("privacyShared").hidden = !ok; $("privacyLocal").hidden = ok;
+  });
+
+  route();
+  state.origin = CONFIG.defaultCenter;
+  loadPharmacies();
+  askPosition();
+  if (isDesktop()) setSheet("open");
+}
+boot();
+</script>
