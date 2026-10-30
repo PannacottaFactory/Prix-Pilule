@@ -137,9 +137,10 @@ button,input,select{font:inherit;color:inherit}
 .fab{position:absolute;z-index:1000;right:var(--gutter-r);bottom:calc(var(--footer-h) + 78px)}
 
 /* ---------- Bottom sheet / panneau ---------- */
-.sheet{position:absolute;z-index:1050;left:0;right:0;bottom:var(--footer-h);background:var(--surface);border-radius:var(--r-lg) var(--r-lg) 0 0;box-shadow:0 -4px 30px rgba(74,63,58,.12);display:flex;flex-direction:column;max-height:calc(100% - var(--footer-h) - 140px - env(safe-area-inset-top,0px));transition:max-height .28s ease}
+.sheet{position:absolute;z-index:1050;left:0;right:0;bottom:var(--footer-h);background:var(--surface);border-radius:var(--r-lg) var(--r-lg) 0 0;box-shadow:0 -4px 30px rgba(74,63,58,.12);display:flex;flex-direction:column;max-height:max(200px,calc(100% - var(--footer-h) - var(--sheet-top,140px)));transition:max-height .28s ease}
 .sheet[data-state="peek"]{max-height:62px;cursor:pointer}
-.sheet-handle{border:0;background:transparent;width:100%;padding:8px 0 2px;cursor:pointer;display:grid;place-items:center;flex:none}
+.sheet-handle{border:0;background:transparent;width:100%;min-height:36px;padding:14px 0 12px;cursor:pointer;display:grid;place-items:center;flex:none;touch-action:none}
+.sheet[data-state="peek"] .sheet-handle{min-height:0;padding:8px 0 2px}
 /* Mobile, panneau replié : une seule ligne discrète, à toucher pour dérouler */
 .peek-more{display:none}
 @media (max-width:899px){
@@ -160,6 +161,7 @@ button,input,select{font:inherit;color:inherit}
 
 @media (min-width:900px){
   .topbar{right:auto;width:400px;left:max(20px,env(safe-area-inset-left,0px))}
+  #menuBtn{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:max(20px,env(safe-area-inset-right,0px))}
   .sheet{left:max(20px,env(safe-area-inset-left,0px));right:auto;width:400px;top:var(--sheet-top,190px);bottom:calc(var(--footer-h) + 16px);border-radius:var(--r-lg);max-height:none;box-shadow:var(--shadow)}
   .sheet[data-state="peek"]{max-height:none}
   .sheet[data-state="peek"] .sheet-body{overflow:auto}
@@ -968,7 +970,11 @@ function initMap(){
   tiles.on("tileload", () => { loaded++; $("map").classList.remove("no-tiles"); $("tileNotice").hidden = true; });
   tiles.on("tileerror", () => { errors++; if (!loaded && errors >= 3) { $("map").classList.add("no-tiles"); $("tileNotice").hidden = false; } });
   markerLayer = L.layerGroup().addTo(map);
-  map.on("click", () => { if (state.view === "pharmacy" || state.view === "add") { state.selected = null; state.view = state.pill ? "pill" : "home"; drawMarkers(); render(); } });
+  map.on("click", () => {
+    if (state.view === "pharmacy" || state.view === "add") { state.selected = null; state.view = state.pill ? "pill" : "home"; drawMarkers(); render(); }
+    // Mobile : toucher la carte replie le panneau pour la dégager
+    if (!isDesktop()) setSheet("peek");
+  });
   let moveTimer;
   map.on("moveend", () => { if (state.demo) return; clearTimeout(moveTimer); moveTimer = setTimeout(loadPharmacies, 180); });
 }
@@ -1071,9 +1077,9 @@ function askPosition(){
     }, fail, { enableHighAccuracy:false, timeout:9000, maximumAge:300000 });
   } catch(e) { fail(); }
 }
-function showLocField(msg, closable){
+function showLocField(msg){
   $("locStatus").textContent = msg; $("locStatus").hidden = !msg;
-  $("locField").hidden = false; $("locClose").hidden = !closable;
+  $("locField").hidden = false; $("locClose").hidden = false;
   measure();
 }
 function hideLocField(){ $("locField").hidden = true; $("locStatus").hidden = true; $("locInput").value = ""; measure(); }
@@ -1475,16 +1481,27 @@ function boot(){
   addEventListener("resize", measure);
   if (window.ResizeObserver) new ResizeObserver(measure).observe($("topbar"));
 
-  combobox({ input:$("pillInput"), list:$("pillList"), source:pillSource(false), emptyText:"Aucune pilule ne correspond. Vérifiez l'orthographe.", onSelect: it => { choosePill(it.pill); $("pillInput").blur(); } });
+  combobox({ input:$("pillInput"), list:$("pillList"), source:pillSource(true), emptyText:"Aucune pilule à prix libre ne correspond. Les pilules remboursées ont le même prix partout et ne sont pas listées.", onSelect: it => { choosePill(it.pill); $("pillInput").blur(); } });
   $("pillInput").addEventListener("input", () => { if (!$("pillInput").value) $("pillClear").hidden = true; else $("pillClear").hidden = false; });
   $("pillClear").addEventListener("click", () => { clearPill(); $("pillInput").focus(); });
 
   const locSrc = q => geocode(q);
   combobox({ input:$("locInput"), list:$("locList"), source:locSrc, debounce:250, emptyText:"Aucun lieu trouvé. Essayez une ville ou un code postal.", onSelect: it => { hideLocField(); setOrigin(it.latlon, false, it.label); toast(`Carte centrée sur ${it.label}`); } });
   $("locClose").addEventListener("click", hideLocField);
-  $("placeBtn").addEventListener("click", () => { showLocField("", true); $("locInput").focus(); });
+  // Mobile : pendant la saisie d'un lieu, le panneau se replie pour laisser voir les suggestions
+  $("locInput").addEventListener("focus", () => { if (!isDesktop()) setSheet("peek"); });
+  $("placeBtn").addEventListener("click", () => { showLocField(""); $("locInput").focus(); });
 
-  $("sheetHandle").addEventListener("click", e => { e.stopPropagation(); setSheet(sheet.dataset.state === "open" ? "peek" : "open"); });
+  $("sheetHandle").addEventListener("click", e => { e.stopPropagation(); if (swiped) { swiped = false; return; } setSheet(sheet.dataset.state === "open" ? "peek" : "open"); });
+  // Mobile : glisser la poignée vers le bas replie le panneau, vers le haut le déroule
+  let swipeY = null, swiped = false;
+  $("sheetHandle").addEventListener("pointerdown", e => { swipeY = e.clientY; swiped = false; });
+  $("sheetHandle").addEventListener("pointerup", e => {
+    if (swipeY === null) return;
+    const dy = e.clientY - swipeY; swipeY = null;
+    if (Math.abs(dy) > 30) { swiped = true; setSheet(dy > 0 ? "peek" : "open"); }
+  });
+  $("sheetHandle").addEventListener("pointercancel", () => { swipeY = null; });
   // Mobile : toucher n'importe où sur le panneau replié le déroule
   sheet.addEventListener("click", () => { if (!isDesktop() && sheet.dataset.state === "peek") setSheet("open"); });
   $("menuBtn").addEventListener("click", openMenu);
