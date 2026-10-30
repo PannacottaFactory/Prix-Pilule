@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
-<title>Prix Pillule</title>
+<title>Prix Pilule</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Comparez les prix des pilules contraceptives non remboursées, pharmacie par pharmacie, grâce aux signalements des utilisatrices.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -132,14 +132,24 @@ button,input,select{font:inherit;color:inherit}
 .locbar{display:flex;flex-direction:column;gap:6px}
 .locnote{font-size:13px;color:var(--fg);background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(6px);padding:6px 12px;border-radius:var(--r-sm);box-shadow:var(--shadow);align-self:flex-start}
 
-.mapnotice{position:absolute;z-index:900;left:50%;transform:translateX(-50%);bottom:calc(var(--footer-h) + 132px);background:var(--surface);color:var(--fg);font-size:13px;padding:8px 14px;border-radius:999px;box-shadow:var(--shadow);max-width:calc(100% - 32px);text-align:center}
+.mapnotice{position:absolute;z-index:900;left:50%;transform:translateX(-50%);bottom:calc(var(--footer-h) + 78px);background:var(--surface);color:var(--fg);font-size:13px;padding:8px 14px;border-radius:999px;box-shadow:var(--shadow);max-width:calc(100% - 32px);text-align:center}
 
-.fab{position:absolute;z-index:1000;right:var(--gutter-r);bottom:calc(var(--footer-h) + 132px)}
+.fab{position:absolute;z-index:1000;right:var(--gutter-r);bottom:calc(var(--footer-h) + 78px)}
 
 /* ---------- Bottom sheet / panneau ---------- */
 .sheet{position:absolute;z-index:1050;left:0;right:0;bottom:var(--footer-h);background:var(--surface);border-radius:var(--r-lg) var(--r-lg) 0 0;box-shadow:0 -4px 30px rgba(74,63,58,.12);display:flex;flex-direction:column;max-height:calc(100% - var(--footer-h) - 140px - env(safe-area-inset-top,0px));transition:max-height .28s ease}
-.sheet[data-state="peek"]{max-height:118px}
-.sheet-handle{border:0;background:transparent;width:100%;padding:10px 0 4px;cursor:pointer;display:grid;place-items:center;flex:none}
+.sheet[data-state="peek"]{max-height:62px;cursor:pointer}
+.sheet-handle{border:0;background:transparent;width:100%;padding:8px 0 2px;cursor:pointer;display:grid;place-items:center;flex:none}
+/* Mobile, panneau replié : une seule ligne discrète, à toucher pour dérouler */
+.peek-more{display:none}
+@media (max-width:899px){
+  .sheet[data-state="peek"] .sheet-body{padding-top:0}
+  .sheet[data-state="peek"] .hint .leaf,.sheet[data-state="peek"] .hint p{display:none}
+  .sheet[data-state="peek"] .sheet-body > :not(.hint){visibility:hidden}
+  .sheet[data-state="peek"] .hint{justify-content:space-between}
+  .sheet[data-state="peek"] .hint h2{font-size:16px!important}
+  .sheet[data-state="peek"] .peek-more{display:inline-flex;align-items:center;gap:4px;font-size:13.5px;font-weight:700;color:var(--action);white-space:nowrap}
+}
 .sheet-handle span{display:block;width:44px;height:5px;border-radius:99px;background:var(--line)}
 .sheet-body{overflow:auto;padding:4px var(--gutter-r) 20px var(--gutter-l);overscroll-behavior:contain;display:flex;flex-direction:column;gap:16px}
 .sheet[data-state="peek"] .sheet-body{overflow:hidden}
@@ -221,10 +231,10 @@ button,input,select{font:inherit;color:inherit}
 .result .price{color:var(--action)}
 .result.stale .price{color:var(--muted)}
 .steps .n{background:var(--rose-soft)!important;color:var(--action)}
-.pin{width:22px;height:22px}
-.pin::after{width:8px;height:8px}
-.pin.small{width:16px;height:16px;border-width:1.5px;opacity:.85}
-.pin.small::after{width:6px;height:6px;background:var(--powder)}
+.pin-wrap .pin{width:22px;height:22px}
+.pin-wrap .pin::after{width:8px;height:8px}
+.pin-wrap .pin.small{width:16px;height:16px;border-width:1.5px;opacity:.85}
+.pin-wrap .pin.small::after{width:6px;height:6px;background:var(--powder)}
 .prefs{display:flex;flex-direction:column;gap:16px;padding:16px;background:var(--tint);border-radius:var(--r-md)}
 .prefs .eyebrow{margin:0 0 6px}
 .drawer .seg{background:var(--surface)}
@@ -334,9 +344,9 @@ thead th{border-top:0;background:var(--tint);font-weight:700;font-size:13.5px}
 
   <div class="topbar" id="topbar">
     <div class="brandrow">
-      <a class="brand" href="#" aria-label="Prix Pillule, retour à la carte">
+      <a class="brand" href="#" aria-label="Prix Pilule, retour à la carte">
         <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 29c0-9 3-15 11-19-8 0-12 4-13 9C13 13 9 9 4 9c5 3 8 9 8 20z" fill="var(--powder)"/><circle cx="16" cy="6" r="3" fill="var(--action)"/></svg>
-        <b>Prix Pillule</b>
+        <b>Prix Pilule</b>
       </a>
       <button class="iconbtn" id="menuBtn" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="drawer">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
@@ -385,7 +395,7 @@ thead th{border-top:0;background:var(--tint);font-weight:700;font-size:13.5px}
 <div class="scrim" id="scrim" hidden></div>
 <aside class="drawer" id="drawer" hidden aria-label="Menu">
   <div class="spread">
-    <h2 style="font-size:24px">Prix Pillule</h2>
+    <h2 style="font-size:24px">Prix Pilule</h2>
     <button class="iconbtn" id="menuClose" aria-label="Fermer le menu" style="box-shadow:none;background:var(--tint)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
   <nav>
@@ -538,7 +548,7 @@ thead th{border-top:0;background:var(--tint);font-weight:700;font-size:13.5px}
 
     <div class="callout">
       <h2>Un rappel important</h2>
-      <p>Prix Pillule vous aide à comprendre et à comparer des prix. Le site ne remplace pas l'avis d'un médecin, d'une sage-femme ou d'un pharmacien. Pour choisir ou changer de contraception, parlez-en avec un ou une professionnelle de santé.</p>
+      <p>Prix Pilule vous aide à comprendre et à comparer des prix. Le site ne remplace pas l'avis d'un médecin, d'une sage-femme ou d'un pharmacien. Pour choisir ou changer de contraception, parlez-en avec un ou une professionnelle de santé.</p>
     </div>
   </div>
 </article>
@@ -610,7 +620,7 @@ const CONFIG = {
   freshDays: 90,    // < 3 mois : prix affiché normalement
   staleDays: 180,   // 3 à 6 mois : « à confirmer » ; au-delà : masqué par défaut
   concordanceEuros: 0.10, // deux prix à 10 centimes près sont considérés concordants
-  storageKey: "prixpillule.v1",
+  storageKey: "prixpilule.v1",
   pharmaciesUrl: "data/pharmacies/", // tuiles FINESS d'1° × 1° : index.json + "{lat}_{lon}.json"
   minZoomReal: 13,   // en dessous, trop de pharmacies : on invite à zoomer
   maxMarkers: 400,   // marqueurs affichés au maximum (les plus proches du centre)
@@ -1148,6 +1158,7 @@ function viewHome(){
       <span class="leaf" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14zm0 0l7-7" stroke="currentColor" stroke-width="1.5" fill-opacity=".85"/></svg></span>
       <div><h2 style="font-size:21px">Comparez le prix de votre pilule</h2>
       <p style="color:var(--muted);font-size:14.5px">${countLine}</p></div>
+      <span class="peek-more" aria-hidden="true">Dérouler <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 15l6-6 6 6"/></svg></span>
     </div>
     <ol class="steps">
       <li><span class="n">1</span><span>Indiquez votre pilule dans la barre de recherche.</span></li>
@@ -1459,7 +1470,9 @@ function boot(){
   $("locClose").addEventListener("click", hideLocField);
   $("placeBtn").addEventListener("click", () => { showLocField("", true); $("locInput").focus(); });
 
-  $("sheetHandle").addEventListener("click", () => setSheet(sheet.dataset.state === "open" ? "peek" : "open"));
+  $("sheetHandle").addEventListener("click", e => { e.stopPropagation(); setSheet(sheet.dataset.state === "open" ? "peek" : "open"); });
+  // Mobile : toucher n'importe où sur le panneau replié le déroule
+  sheet.addEventListener("click", () => { if (!isDesktop() && sheet.dataset.state === "peek") setSheet("open"); });
   $("menuBtn").addEventListener("click", openMenu);
   $("menuClose").addEventListener("click", closeMenu);
   $("scrim").addEventListener("click", closeMenu);
@@ -1473,7 +1486,7 @@ function boot(){
     else document.documentElement.removeAttribute("data-theme");
     document.querySelectorAll("[data-theme-set]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.themeSet === t)));
   };
-  applyTheme(Store.get("theme", "auto"));
+  applyTheme(Store.get("theme", "light")); // clair par défaut ; Sombre ou Auto au choix dans le menu
   document.querySelectorAll("[data-theme-set]").forEach(b => b.addEventListener("click", () => { Store.set("theme", b.dataset.themeSet); applyTheme(b.dataset.themeSet); }));
 
   syncDemoUi();

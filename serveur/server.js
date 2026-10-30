@@ -1,4 +1,4 @@
-/* Prix Pillule : serveur (Node.js ≥ 18, aucune dépendance)
+/* Prix Pilule : serveur (Node.js ≥ 18, aucune dépendance)
    - sert le site (index.html, data/…)
    - API des prix partagés :
        GET  /api/health
@@ -21,7 +21,7 @@ const PORT = +process.env.PORT || 8080;
 const HOST = process.env.HOST || "127.0.0.1";
 
 /* Pilules à prix libre acceptées et formats de boîte vendus.
-   À garder synchronisé avec PILULES dans prix-pillule.html (remboursable:false). */
+   À garder synchronisé avec PILULES dans prix-pilule.html (remboursable:false). */
 const PILLS = {
   varnoline:[1,3], mercilon:[1,3], desobel:[3], minesse:[1,3], perleane:[1,3], carlin:[3], triafemi:[3], optikinzy:[3],
   jasmine:[3], jasminelle:[3], yaz:[3], drospibel:[3], phizoe:[1,3], belara:[3], qlaira:[3], zoely:[1,3], slinda:[1,3], cerazette:[1,3]
@@ -150,4 +150,4 @@ http.createServer(async (req, res) => {
     if (url.pathname.startsWith("/api/")) await api(req, res, url);
     else serveStatic(req, res, url);
   } catch (e) { fail(res, 400, "Requête invalide."); }
-}).listen(PORT, HOST, () => console.log(`Prix Pillule : http://localhost:${PORT}/`));
+}).listen(PORT, HOST, () => console.log(`Prix Pilule : http://localhost:${PORT}/`));

@@ -1,5 +1,5 @@
 -- =====================================================================
--- Prix Pillule : base Supabase des prix partagés
+-- Prix Pilule : base Supabase des prix partagés
 -- À exécuter une fois dans Supabase > SQL Editor (peut être relancé sans risque).
 -- Puis exécuter supabase/pharmacies.sql (liste des officines FINESS).
 --
@@ -21,7 +21,7 @@ create table if not exists public.pharmacies (
 alter table public.pharmacies enable row level security;
 
 -- Pilules à prix libre acceptées et formats de boîte vendus (1 = 1 mois, 3 = 3 mois).
--- À garder identique à PILULES (remboursable:false) dans prix-pillule.html.
+-- À garder identique à PILULES (remboursable:false) dans prix-pilule.html.
 create table if not exists public.pills (
   id text primary key,
   formats smallint[] not null
