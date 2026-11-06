@@ -298,6 +298,7 @@ button,input,select{font:inherit;color:inherit}
 .tag.none{color:var(--muted);font-weight:600;font-size:12px;padding:3px 8px;opacity:.9}
 .tag.sel{border-color:var(--action);background:var(--rose-soft);z-index:2}
 .tag.sel::after{border-color:var(--action)}
+.leaflet-pane>svg path.acc{fill:var(--action);fill-opacity:.1;stroke:var(--action);stroke-opacity:.35;stroke-width:1}
 .me{position:absolute;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:var(--action);border:3px solid var(--surface);box-shadow:0 0 0 6px color-mix(in srgb,var(--action) 22%,transparent)}
 @media (prefers-reduced-motion:no-preference){
   .me{animation:breathe 2.6s ease-in-out infinite}
@@ -342,7 +343,7 @@ thead th{border-top:0;background:var(--tint);font-weight:700;font-size:13.5px}
 .sprig{color:var(--powder)}
 .verify-legend{border:1.5px dashed var(--warn);border-radius:var(--r-md);padding:12px 16px;font-size:14.5px;margin-top:18px}
 
-.toast{position:fixed;z-index:2500;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 16px);background:var(--fg);color:var(--bg);padding:12px 18px;border-radius:999px;box-shadow:var(--shadow);font-weight:650;font-size:15px;max-width:calc(100% - 32px)}
+.toast{position:fixed;z-index:2500;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 16px);background:var(--fg);color:var(--bg);padding:12px 18px;border-radius:18px;box-shadow:var(--shadow);font-weight:650;font-size:15px;line-height:1.35;text-align:center;width:max-content;max-width:min(440px,calc(100% - 32px))}
 </style>
 
 <div id="app">
@@ -966,7 +967,7 @@ const state = {
 /* =====================================================================
    CARTE
    ===================================================================== */
-let map = null, markerLayer = null, meMarker = null, markers = {};
+let map = null, markerLayer = null, meMarker = null, accCircle = null, markers = {};
 const $ = id => document.getElementById(id);
 
 function initMap(){
@@ -984,17 +985,23 @@ function initMap(){
     // Mobile : toucher la carte replie le panneau pour la dégager
     if (!isDesktop()) setSheet("peek");
   });
+  // Déplacer la carte à la main arrête l'affinage de la position (sinon la carte y revient)
+  map.on("dragstart", () => { if (stopTracking) stopTracking(); });
   let moveTimer;
   map.on("moveend", () => { if (state.demo) return; clearTimeout(moveTimer); moveTimer = setTimeout(loadPharmacies, 180); });
 }
 
-function setOrigin(latlon, isUser, label){
+// accuracy : marge d'erreur en mètres (position GPS), affichée en cercle autour du point
+// keepView : affinage d'une position déjà affichée, on ne fait que suivre le point
+function setOrigin(latlon, isUser, label, accuracy, keepView){
   state.origin = latlon; state.originIsUser = isUser;
   syncLocateBtn();
   if (map) {
-    map.setView(latlon, CONFIG.defaultZoom);
+    if (keepView) map.panTo(latlon); else map.setView(latlon, CONFIG.defaultZoom);
     if (meMarker) meMarker.remove();
-    meMarker = L.marker(latlon, { icon:L.divIcon({ className:"pin-wrap", html:'<span class="me"></span>', iconSize:[0,0] }), keyboard:false, interactive:false, title: isUser ? "Votre position" : (label || "Lieu choisi") }).addTo(map);
+    if (accCircle) { accCircle.remove(); accCircle = null; }
+    if (isUser && accuracy > 30) accCircle = L.circle(latlon, { radius:accuracy, className:"acc", interactive:false }).addTo(map);
+    meMarker = L.marker(latlon, { icon:L.divIcon({ className:"pin-wrap", html:'<span class="me"></span>', iconSize:[0,0] }), keyboard:false, interactive:false, zIndexOffset:1000, title: isUser ? "Votre position" : (label || "Lieu choisi") }).addTo(map);
   }
   loadPharmacies();
 }
@@ -1081,12 +1088,31 @@ function askPosition(){
   const fail = () => { if (done) return; done = true; showLocField(""); };
   setTimeout(fail, 10000);
   try {
-    navigator.geolocation.getCurrentPosition(pos => {
-      if (done) return; done = true;
-      status.hidden = true; $("locField").hidden = true;
-      setOrigin([pos.coords.latitude, pos.coords.longitude], true);
-    }, fail, { enableHighAccuracy:false, timeout:9000, maximumAge:300000 });
+    trackPosition(() => { if (done) return false; done = true; status.hidden = true; $("locField").hidden = true; return true; }, fail, true);
   } catch(e) { fail(); }
+}
+/* Suit la position quelques secondes : la première mesure (souvent approximative : wifi, antenne)
+   centre la carte, les suivantes (GPS) l'affinent. On s'arrête dès qu'elle est précise à 25 m. */
+let stopTracking = null;
+function trackPosition(onFirst, onFail, quiet){
+  if (stopTracking) stopTracking();
+  let id = null, timer = null, best = null, got = false;
+  const stop = () => { if (id !== null) navigator.geolocation.clearWatch(id); clearTimeout(timer); id = null; if (stopTracking === stop) stopTracking = null; };
+  const finish = () => {
+    stop();
+    if (best && best.coords.accuracy > 1000 && !quiet) toast(`Position approximative (à ${Math.round(best.coords.accuracy/1000)} km près). Pour plus de précision, cherchez votre adresse.`);
+  };
+  stopTracking = stop;
+  id = navigator.geolocation.watchPosition(pos => {
+    const acc = pos.coords.accuracy || 9999;
+    if (best && acc >= best.coords.accuracy) return;
+    best = pos;
+    const latlon = [pos.coords.latitude, pos.coords.longitude];
+    if (!got) { if (onFirst() === false) return stop(); got = true; setOrigin(latlon, true, null, acc, false); }
+    else setOrigin(latlon, true, null, acc, true);
+    if (acc <= 25) finish();
+  }, err => { if (!got) { stop(); onFail(err); } else finish(); }, { enableHighAccuracy:true, timeout:15000, maximumAge:0 });
+  timer = setTimeout(() => { if (got) finish(); else { stop(); onFail(null); } }, 20000);
 }
 // Bouton « Me géolocaliser » : recentre la carte sur la position actuelle
 function locateMe(){
@@ -1095,15 +1121,12 @@ function locateMe(){
   if (btn.classList.contains("busy")) return;
   btn.classList.add("busy");
   const end = () => btn.classList.remove("busy");
-  navigator.geolocation.getCurrentPosition(pos => {
-    end(); hideLocField();
-    setOrigin([pos.coords.latitude, pos.coords.longitude], true);
-  }, err => {
+  trackPosition(() => { end(); hideLocField(); return true; }, err => {
     end();
     toast(err && err.code === 1
       ? "Position refusée. Autorisez la localisation pour ce site dans les réglages du navigateur."
       : "Position introuvable pour le moment. Réessayez ou cherchez une ville.");
-  }, { enableHighAccuracy:true, timeout:12000, maximumAge:30000 });
+  }, false);
 }
 function syncLocateBtn(){
   const btn = $("locateBtn"); if (!btn) return;
@@ -1518,7 +1541,7 @@ function boot(){
   $("pillClear").addEventListener("click", () => { clearPill(); $("pillInput").focus(); });
 
   const locSrc = q => geocode(q);
-  combobox({ input:$("locInput"), list:$("locList"), source:locSrc, debounce:250, emptyText:"Aucun lieu trouvé. Essayez une ville ou un code postal.", onSelect: it => { hideLocField(); setOrigin(it.latlon, false, it.label); toast(`Carte centrée sur ${it.label}`); } });
+  combobox({ input:$("locInput"), list:$("locList"), source:locSrc, debounce:250, emptyText:"Aucun lieu trouvé. Essayez une ville ou un code postal.", onSelect: it => { if (stopTracking) stopTracking(); hideLocField(); setOrigin(it.latlon, false, it.label); toast(`Carte centrée sur ${it.label}`); } });
   $("locClose").addEventListener("click", hideLocField);
   // Mobile : pendant la saisie d'un lieu, le panneau se replie pour laisser voir les suggestions
   $("locInput").addEventListener("focus", () => { if (!isDesktop()) setSheet("peek"); });
