@@ -18,7 +18,8 @@ Outil d'information neutre : aucune pharmacie mise en avant, aucun lien commerci
 | `supabase/pharmacies.sql` | Liste des n° FINESS acceptés par la base. |
 | `serveur/server.js` | Serveur local de test (site + API des prix), sans dépendance. |
 | `outils/finess2json.py` | Régénère `data/pharmacies/` depuis un nouveau fichier FINESS. |
-| `outils/build.js` | Régénère `index.html` depuis `prix-pilule.html`. |
+| `outils/build.js` | Régénère `index.html` (avec les balises SEO et de partage) et `sitemap.xml` depuis `prix-pilule.html`. |
+| `favicon.svg`, `apple-touch-icon.png`, `og-image.png` | Icônes du site et image d'aperçu lors d'un partage (réseaux sociaux, messageries). |
 
 ## Mise en ligne
 

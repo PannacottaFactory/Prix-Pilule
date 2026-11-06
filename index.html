@@ -1,11 +1,29 @@
 <!doctype html>
-<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
-<title>Prix Pilule</title>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Prix Pilule : le prix des pilules contraceptives en pharmacie</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Comparez les prix des pilules contraceptives non remboursées, pharmacie par pharmacie, grâce aux signalements des utilisatrices.">
+<meta name="description" content="Carte gratuite des prix des pilules contraceptives non remboursées, pharmacie par pharmacie, partout en France. Comparez les prix près de chez vous, partagés par les utilisatrices.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..600,100&family=Nunito+Sans:opsz,wght@6..12,400..750&display=swap">
+<meta name="google-site-verification" content="-UEHVb87Ptt4ctwCaY-khcHoxZH4W4uGsPKeg71xpuc">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://pannacottafactory.github.io/Prix-Pilule/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#B0546A">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Prix Pilule">
+<meta property="og:url" content="https://pannacottafactory.github.io/Prix-Pilule/">
+<meta property="og:title" content="Prix Pilule : le prix des pilules contraceptives en pharmacie">
+<meta property="og:description" content="Carte gratuite des prix des pilules contraceptives non remboursées, pharmacie par pharmacie, partout en France. Comparez les prix près de chez vous, partagés par les utilisatrices.">
+<meta property="og:image" content="https://pannacottafactory.github.io/Prix-Pilule/og-image.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Prix Pilule : carte des prix des pilules contraceptives en pharmacie">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://pannacottafactory.github.io/Prix-Pilule/#site","url":"https://pannacottafactory.github.io/Prix-Pilule/","name":"Prix Pilule","inLanguage":"fr-FR","description":"Carte gratuite des prix des pilules contraceptives non remboursées, pharmacie par pharmacie, partout en France. Comparez les prix près de chez vous, partagés par les utilisatrices.","publisher":{"@id":"https://pannacottafactory.github.io/Prix-Pilule/#editeur"}},{"@type":"WebApplication","@id":"https://pannacottafactory.github.io/Prix-Pilule/#app","url":"https://pannacottafactory.github.io/Prix-Pilule/","name":"Prix Pilule","applicationCategory":"HealthApplication","operatingSystem":"Tous (navigateur web)","inLanguage":"fr-FR","isAccessibleForFree":true,"areaServed":{"@type":"Country","name":"France"},"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"description":"Carte gratuite des prix des pilules contraceptives non remboursées, pharmacie par pharmacie, partout en France. Comparez les prix près de chez vous, partagés par les utilisatrices.","publisher":{"@id":"https://pannacottafactory.github.io/Prix-Pilule/#editeur"}},{"@type":"Organization","@id":"https://pannacottafactory.github.io/Prix-Pilule/#editeur","name":"Panna Cotta Factory","email":"thepannacottafactory@gmail.com","url":"https://pannacottafactory.github.io/Prix-Pilule/","sameAs":["https://github.com/PannacottaFactory/Prix-Pilule"]}]}</script>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
 <style>
 /* Layout : carte plein écran, panneaux flottants. Mobile : barre de recherche en haut + bottom sheet.
    Bureau (≥ 900px) : colonne flottante à gauche (recherche + panneau), carte à droite. */
@@ -135,6 +153,11 @@ button,input,select{font:inherit;color:inherit}
 .mapnotice{position:absolute;z-index:900;left:50%;transform:translateX(-50%);bottom:calc(var(--footer-h) + 78px);background:var(--surface);color:var(--fg);font-size:13px;padding:8px 14px;border-radius:999px;box-shadow:var(--shadow);max-width:calc(100% - 32px);text-align:center}
 
 .fab{position:absolute;z-index:1000;right:var(--gutter-r);bottom:calc(var(--footer-h) + 78px)}
+.fab.locate{bottom:calc(var(--footer-h) + 78px + 54px)}
+.fab.locate[aria-pressed="true"]{color:var(--action)}
+.fab.locate.busy svg{animation:locpulse 1s ease-in-out infinite}
+@keyframes locpulse{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.fab.locate.busy svg{animation:none;opacity:.5}}
 
 /* ---------- Bottom sheet / panneau ---------- */
 .sheet{position:absolute;z-index:1050;left:0;right:0;bottom:var(--footer-h);background:var(--surface);border-radius:var(--r-lg) var(--r-lg) 0 0;box-shadow:0 -4px 30px rgba(74,63,58,.12);display:flex;flex-direction:column;max-height:max(200px,min(calc(100% - var(--footer-h) - var(--sheet-top,140px)),calc((100% - var(--footer-h)) * .62)));transition:max-height .28s ease,transform .2s ease}
@@ -169,6 +192,7 @@ button,input,select{font:inherit;color:inherit}
   .sheet-body{padding:20px 22px 22px}
   .mapnotice{left:calc(50% + 210px);bottom:calc(var(--footer-h) + 16px)}
   .fab{bottom:calc(var(--footer-h) + 120px)}
+  .fab.locate{bottom:calc(var(--footer-h) + 120px + 54px)}
 }
 @media (max-width:899px){ .leaflet-control-zoom{display:none!important} }
 
@@ -375,6 +399,11 @@ thead th{border-top:0;background:var(--tint);font-weight:700;font-size:13.5px}
     </div>
   </div>
 
+  <h1 class="sr-only">Prix des pilules contraceptives non remboursées, pharmacie par pharmacie</h1>
+
+  <button class="iconbtn fab locate" id="locateBtn" aria-label="Me géolocaliser" title="Me géolocaliser" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></svg>
+  </button>
   <button class="iconbtn fab" id="placeBtn" aria-label="Changer de lieu" title="Changer de lieu">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M9 4L3 6.5v13L9 17l6 2.5 6-2.5v-13L15 6.5 9 4zM9 4v13M15 6.5v13"/></svg>
   </button>
@@ -981,6 +1010,7 @@ function initMap(){
 
 function setOrigin(latlon, isUser, label){
   state.origin = latlon; state.originIsUser = isUser;
+  syncLocateBtn();
   if (map) {
     map.setView(latlon, CONFIG.defaultZoom);
     if (meMarker) meMarker.remove();
@@ -1077,6 +1107,27 @@ function askPosition(){
       setOrigin([pos.coords.latitude, pos.coords.longitude], true);
     }, fail, { enableHighAccuracy:false, timeout:9000, maximumAge:300000 });
   } catch(e) { fail(); }
+}
+// Bouton « Me géolocaliser » : recentre la carte sur la position actuelle
+function locateMe(){
+  const btn = $("locateBtn");
+  if (!("geolocation" in navigator)) return toast("La géolocalisation n'est pas disponible sur cet appareil.");
+  if (btn.classList.contains("busy")) return;
+  btn.classList.add("busy");
+  const end = () => btn.classList.remove("busy");
+  navigator.geolocation.getCurrentPosition(pos => {
+    end(); hideLocField();
+    setOrigin([pos.coords.latitude, pos.coords.longitude], true);
+  }, err => {
+    end();
+    toast(err && err.code === 1
+      ? "Position refusée. Autorisez la localisation pour ce site dans les réglages du navigateur."
+      : "Position introuvable pour le moment. Réessayez ou cherchez une ville.");
+  }, { enableHighAccuracy:true, timeout:12000, maximumAge:30000 });
+}
+function syncLocateBtn(){
+  const btn = $("locateBtn"); if (!btn) return;
+  btn.setAttribute("aria-pressed", state.originIsUser ? "true" : "false");
 }
 function showLocField(msg){
   $("locStatus").textContent = msg; $("locStatus").hidden = !msg;
@@ -1491,6 +1542,7 @@ function boot(){
   $("locClose").addEventListener("click", hideLocField);
   // Mobile : pendant la saisie d'un lieu, le panneau se replie pour laisser voir les suggestions
   $("locInput").addEventListener("focus", () => { if (!isDesktop()) setSheet("peek"); });
+  $("locateBtn").addEventListener("click", locateMe);
   $("placeBtn").addEventListener("click", () => { showLocField(""); $("locInput").focus(); });
 
   $("sheetHandle").addEventListener("click", e => { e.stopPropagation(); setSheet(sheet.dataset.state === "open" ? "peek" : "open"); });
